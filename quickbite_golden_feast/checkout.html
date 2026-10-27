@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickBite - Checkout</title>
+<link rel="stylesheet" href="css/style.css">
+<style>
+.checkout-container{max-width:850px;margin:35px auto;padding:20px}
+.checkout-container h1{text-align:center}
+.checkout-card{background:#fff;border:1px solid #eaeaea;border-radius:14px;padding:24px;margin:20px 0;box-shadow:0 4px 12px #0000000a}
+.checkout-card h2{margin-top:0}
+.checkout-card label{display:block;margin:12px 0 6px}
+.checkout-card input,.checkout-card textarea{box-sizing:border-box;width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;font:inherit}
+.checkout-card textarea{resize:vertical}
+.checkout-button{background:#ffc857;color:#242424;border:0;border-radius:8px;padding:13px 20px;font-weight:bold;cursor:pointer;width:100%;font-size:16px}
+.checkout-button:hover{background:#f2b93f}
+.order-row{display:flex;justify-content:space-between;gap:12px;padding:8px 0}
+.checkout-message{padding:12px;border-radius:8px;background:#f2f6ff;margin-top:15px}
+@media(max-width:600px){.checkout-container{padding:12px}.checkout-card{padding:16px}}
+</style>
+</head>
+<body>
+<main class="checkout-container">
+<h1>QuickBite Checkout</h1>
+<p style="text-align:center">Almost there! Confirm your delivery details.</p>
+<section class="checkout-card">
+<h2>Your Order</h2>
+<div id="order-items"></div>
+<hr>
+<div class="order-row"><strong>Delivery fee</strong><span id="delivery-fee">₹30</span></div>
+<div class="order-row"><strong>Total</strong><strong id="order-total">₹0</strong></div>
+<p id="cart-message"></p>
+</section>
+<form id="checkout-form" class="checkout-card">
+<h2>Delivery Details</h2>
+<label for="customer-name">Full name</label>
+<input id="customer-name" name="name" required maxlength="80">
+<label for="phone">Phone number</label>
+<input id="phone" name="phone" type="tel" pattern="[0-9]{10}" maxlength="10" placeholder="10-digit mobile number" required>
+<label for="street">Door number and street address</label>
+<textarea id="street" name="street" rows="3" required maxlength="250"></textarea>
+<label for="city">City</label>
+<input id="city" name="city" value="Chennai" required maxlength="60">
+<label for="pincode">PIN code</label>
+<input id="pincode" name="pincode" inputmode="numeric" pattern="[0-9]{6}" maxlength="6" required>
+<label for="payment">Demo payment method</label>
+<select id="payment" name="payment" required style="width:100%;padding:12px;border-radius:8px;border:1px solid #ccc">
+<option value="COD">Cash on Delivery</option>
+<option value="Demo UPI">Demo UPI (no real payment)</option>
+</select>
+<p style="color:#777;font-size:13px">This is a student demo. No real payment will be processed.</p>
+<button class="checkout-button" type="submit">Place Order</button>
+<p id="checkout-message" class="checkout-message" hidden></p>
+</form>
+</main>
+<script src="js/checkout.js"></script>
+</body>
+</html>

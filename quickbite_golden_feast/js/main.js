@@ -1,0 +1,17 @@
+const STORAGE_KEY="qb_cart";
+const foodItems={"masala-dosa":{id:"masala-dosa",name:"Masala Dosa",price:120},"idli-sambar":{id:"idli-sambar",name:"Idli Sambar",price:80},"ven-pongal":{id:"ven-pongal",name:"Ven Pongal",price:100}};
+const cartCount=document.getElementById("cartCount"),toast=document.getElementById("toast");let toastTimer;
+function readCart(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||[]}catch{return[]}}
+function saveCart(cart){localStorage.setItem(STORAGE_KEY,JSON.stringify(cart));updateCartCount(cart)}
+function updateCartCount(cart=readCart()){cartCount.textContent=cart.reduce((sum,item)=>sum+(item.quantity||0),0)}
+function showToast(message){toast.textContent=message;toast.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove("show"),2200)}
+document.querySelectorAll("[data-add]").forEach(button=>button.addEventListener("click",()=>{const item=foodItems[button.dataset.add];if(!item)return;const cart=readCart(),existing=cart.find(row=>row.id===item.id);if(existing)existing.quantity+=1;else cart.push({...item,quantity:1});saveCart(cart);showToast(`${item.name} added to your cart`)}));
+document.querySelectorAll(".heart-button").forEach(button=>button.addEventListener("click",()=>{const selected=button.getAttribute("aria-pressed")==="true";button.setAttribute("aria-pressed",String(!selected));button.textContent=selected?"♡":"♥";button.setAttribute("aria-label",(selected?"Add ":"Remove ")+button.closest(".food-card").querySelector("h3").textContent+(selected?" to":" from")+" favourites");showToast(selected?"Removed from favourites":"Added to favourites")}));
+const menuToggle=document.getElementById("menuToggle"),mainNav=document.getElementById("mainNav");
+menuToggle.addEventListener("click",()=>{const open=mainNav.classList.toggle("open");menuToggle.setAttribute("aria-expanded",String(open))});
+mainNav.querySelectorAll("a").forEach(link=>link.addEventListener("click",e=>{mainNav.classList.remove("open");menuToggle.setAttribute("aria-expanded","false");const target=link.getAttribute("href");if(!document.querySelector(target)){e.preventDefault();showToast(link.textContent.trim()+" page is coming soon");return}mainNav.querySelectorAll("a").forEach(item=>item.classList.remove("active"));link.classList.add("active")}));
+document.getElementById("cartButton").addEventListener("click",()=>{const cart=readCart();if(!cart.length){showToast("Your cart is empty — add a bite first!");return}const summary=cart.map(item=>`${item.name} × ${item.quantity}`).join(", ");showToast(`${summary} · Total ₹${cart.reduce((sum,item)=>sum+item.price*item.quantity,0)}`)});
+updateCartCount();
+const placeholder="data:image/svg+xml;utf8,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><defs><radialGradient id="g" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#FFE9B0"/><stop offset="1" stop-color="#FFC857"/></radialGradient></defs><rect width="400" height="400" fill="url(#g)"/><circle cx="200" cy="205" r="95" fill="#fff"/><circle cx="200" cy="205" r="68" fill="#E63946" opacity=".9"/><circle cx="200" cy="205" r="34" fill="#FFC857"/></svg>');
+function useFallback(img){if(img.dataset.fallback)return;img.dataset.fallback="1";img.src=placeholder}
+document.querySelectorAll("img").forEach(img=>{img.addEventListener("error",()=>useFallback(img));if(img.complete&&img.naturalWidth===0)useFallback(img)});

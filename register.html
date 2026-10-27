@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create an Account | QuickBite</title>
+  <!-- Shared Golden Feast Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="QuickBite Home">
+        <span class="brand-icon">🍛</span>
+        <span class="brand-text">Quick<span class="brand-highlight">Bite</span></span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="register.html" class="nav-link active" aria-current="page">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Registration Container -->
+  <main class="auth-main">
+    <div class="auth-card-wrapper">
+      <div class="auth-card">
+        
+        <!-- Header / Greeting -->
+        <div class="auth-header">
+          <div class="badge-tag">Golden Feast Experience</div>
+          <h1 class="auth-title">Join QuickBite</h1>
+          <p class="auth-subtitle">Create an account to explore authentic culinary delights and track your orders in real time.</p>
+        </div>
+
+        <!-- Academic / Simulation Disclaimer -->
+        <div class="notice-banner demo-disclaimer" role="note">
+          <span class="notice-icon">ℹ️</span>
+          <div class="notice-content">
+            <strong>College Mini Project Demo:</strong> Account data is simulated in your browser via LocalStorage for demonstration purposes only. Do not enter real or sensitive passwords.
+          </div>
+        </div>
+
+        <!-- Feedback Alert Container -->
+        <div id="auth-alert" class="auth-alert" role="alert" aria-live="polite" style="display: none;"></div>
+
+        <!-- Registration Form -->
+        <form id="register-form" class="auth-form" novalidate>
+          
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="register-name" class="form-label">Full Name <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">👤</span>
+              <input 
+                type="text" 
+                id="register-name" 
+                name="fullName" 
+                class="form-input" 
+                placeholder="e.g. Aarav Sharma" 
+                autocomplete="name" 
+                required
+              >
+            </div>
+            <p id="name-error" class="field-error" aria-live="polite"></p>
+          </div>
+
+          <!-- Email Address -->
+          <div class="form-group">
+            <label for="register-email" class="form-label">Email Address <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">✉️</span>
+              <input 
+                type="email" 
+                id="register-email" 
+                name="email" 
+                class="form-input" 
+                placeholder="name@example.com" 
+                autocomplete="email" 
+                required
+              >
+            </div>
+            <p id="email-error" class="field-error" aria-live="polite"></p>
+          </div>
+
+          <!-- Password -->
+          <div class="form-group">
+            <label for="register-password" class="form-label">Password <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">🔒</span>
+              <input 
+                type="password" 
+                id="register-password" 
+                name="password" 
+                class="form-input" 
+                placeholder="Minimum 8 characters" 
+                autocomplete="new-password" 
+                required
+              >
+              <button 
+                type="button" 
+                id="toggle-reg-password" 
+                class="btn-toggle-password" 
+                aria-label="Toggle password visibility" 
+                aria-pressed="false"
+              >
+                👁️
+              </button>
+            </div>
+            <span class="field-hint">Must be at least 8 characters long.</span>
+            <p id="password-error" class="field-error" aria-live="polite"></p>
+          </div>
+
+          <!-- Confirm Password -->
+          <div class="form-group">
+            <label for="register-confirm-password" class="form-label">Confirm Password <span class="required-star">*</span></label>
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">🔑</span>
+              <input 
+                type="password" 
+                id="register-confirm-password" 
+                name="confirmPassword" 
+                class="form-input" 
+                placeholder="Re-enter your password" 
+                autocomplete="new-password" 
+                required
+              >
+              <button 
+                type="button" 
+                id="toggle-reg-confirm" 
+                class="btn-toggle-password" 
+                aria-label="Toggle confirm password visibility" 
+                aria-pressed="false"
+              >
+                👁️
+              </button>
+            </div>
+            <p id="confirm-password-error" class="field-error" aria-live="polite"></p>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" id="btn-register-submit" class="btn btn-primary btn-block">
+            <span class="btn-text">Create Account</span>
+            <span class="btn-spinner" aria-hidden="true" style="display: none;">⏳</span>
+          </button>
+        </form>
+
+        <!-- Form Footer -->
+        <div class="auth-footer">
+          <p>Already have an account? <a href="login.html" class="auth-link">Sign In here</a></p>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
+

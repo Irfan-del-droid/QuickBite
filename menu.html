@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Menu Catalogue — QuickBite</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="main-wrapper">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <a href="index.html" class="brand-link">
+        <div class="logo-badge">🍔</div>
+        <div class="brand-text">
+          <h1>Quick<span>Bite</span></h1>
+          <p>Online Food Ordering & Delivery</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html" class="active">Menu</a></li>
+          <li><a href="#" onclick="alert('My Orders module is under development by teammate.'); return false;">My Orders</a></li>
+          <li><a href="#" onclick="alert('Login module is under development by teammate.'); return false;">Login</a></li>
+          <li>
+            <a href="cart.html" class="cart-link-btn">
+              <span>🛒 Cart</span>
+              <span class="cart-badge" id="cart-badge">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+      <div>
+        <h2 class="page-title">Explore Our Delicious Menu</h2>
+        <p class="page-subtitle">Choose from our freshly prepared meals and add them directly to your cart.</p>
+      </div>
+      <div class="team-pill">Food Catalogue | PROJECT RRN 1247</div>
+    </section>
+
+    <!-- Catalogue Section -->
+    <main class="catalogue-container">
+      <!-- Category Filter Pills -->
+      <div class="category-bar" id="category-bar">
+        <button class="category-pill active" data-category="all">All Items</button>
+        <button class="category-pill" data-category="Burgers">Burgers</button>
+        <button class="category-pill" data-category="Pizza">Pizza</button>
+        <button class="category-pill" data-category="Meals">Meals</button>
+        <button class="category-pill" data-category="Desserts">Desserts</button>
+        <button class="category-pill" data-category="Beverages">Drinks</button>
+      </div>
+
+      <!-- Food Grid Populated dynamically from qb_food_items -->
+      <div class="food-grid" id="food-grid">
+        <!-- Rendered by inline script -->
+      </div>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
+      <p style="font-size: 0.78rem; margin-top: 4px;">Branch: <code>feature/rrn-1247-food-catalogue</code></p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notice hidden"></div>
+
+  <!-- Shared LocalStorage Script -->
+  <script src="js/storage.js"></script>
+  <script>
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2500);
+    }
+
+    function renderMenu(selectedCategory = "all") {
+      const foodGrid = document.getElementById("food-grid");
+      const items = getFoodItems();
+      const filtered = selectedCategory === "all" 
+        ? items 
+        : items.filter(item => item.category === selectedCategory);
+
+      foodGrid.innerHTML = filtered.map(item => `
+        <div class="food-card" data-id="${item.id}">
+          <div class="food-card-img-wrap">
+            <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80'">
+            <span class="food-category-badge">${item.category}</span>
+          </div>
+          <div class="food-card-body">
+            <h3 class="food-card-title">${item.name}</h3>
+            <p class="food-card-desc">${item.description}</p>
+            <div class="food-card-footer">
+              <span class="food-card-price">${formatCurrency(item.price)}</span>
+              <button class="btn-add-food" onclick="handleAddToCart(${item.id})">
+                <span>+</span> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function handleAddToCart(id) {
+      const items = getFoodItems();
+      const product = items.find(i => Number(i.id) === Number(id));
+      if (product) {
+        addToCart(product);
+        showToast(`Added "${product.name}" to cart! 🛒`);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderMenu("all");
+      const categoryPills = document.querySelectorAll(".category-pill");
+      categoryPills.forEach(pill => {
+        pill.addEventListener("click", (e) => {
+          categoryPills.forEach(p => p.classList.remove("active"));
+          e.target.classList.add("active");
+          renderMenu(e.target.getAttribute("data-category"));
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+

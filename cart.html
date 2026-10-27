@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Shopping Cart — QuickBite</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- Large Rounded Light-Blue / Off-White Main Container -->
+  <div class="main-wrapper">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <a href="index.html" class="brand-link">
+        <div class="logo-badge">🍔</div>
+        <div class="brand-text">
+          <h1>Quick<span>Bite</span></h1>
+          <p>Online Food Ordering & Delivery</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="#" onclick="alert('My Orders module is under development by teammate.'); return false;">My Orders</a></li>
+          <li><a href="#" onclick="alert('Login module is under development by teammate.'); return false;">Login</a></li>
+          <li>
+            <a href="cart.html" class="cart-link-btn active">
+              <span>🛒 Cart</span>
+              <span class="cart-badge" id="cart-badge">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+      <div>
+        <h2 class="page-title">Your Shopping Cart</h2>
+        <p class="page-subtitle">Review your selected meals, adjust quantities, and calculate your final bill.</p>
+      </div>
+      <div class="team-pill">Module: Shopping Cart | PROJECT RRN 1247</div>
+    </section>
+
+    <!-- Main Shopping Cart Content Grid -->
+    <main class="cart-content-grid">
+      <!-- Left Column: Cart Items List -->
+      <section class="cart-items-wrapper">
+        <div class="cart-items-header">
+          <span class="cart-count-title" id="cart-items-count-heading">Items in Cart (0)</span>
+          <button id="clear-cart-btn" class="btn-clear-cart" style="display: none;">Clear Cart</button>
+        </div>
+
+        <!-- Dynamic Container for Cart Item Cards or Empty State -->
+        <div id="cart-items-list">
+          <!-- Populated by js/cart.js -->
+        </div>
+      </section>
+
+      <!-- Right Column: Bill Summary Card -->
+      <aside class="bill-summary-wrapper">
+        <div class="bill-card">
+          <div class="bill-card-header">
+            <h3>Bill Details</h3>
+          </div>
+
+          <div class="bill-rows">
+            <div class="bill-row">
+              <span>Item Subtotal</span>
+              <strong id="bill-subtotal">₹0.00</strong>
+            </div>
+
+            <div class="bill-row">
+              <span>Delivery Fee</span>
+              <span id="bill-delivery">₹0.00</span>
+            </div>
+
+            <div class="bill-row">
+              <span>Taxes & GST (5%)</span>
+              <span id="bill-tax">₹0.00</span>
+            </div>
+
+            <div class="bill-row total-row">
+              <span>Grand Total</span>
+              <strong id="bill-grand-total">₹0.00</strong>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="bill-actions">
+            <a href="checkout.html" id="btn-proceed-checkout" class="btn-yellow btn-checkout-full">
+              Proceed to Checkout
+            </a>
+            <a href="menu.html" class="btn-secondary">
+              ← Continue Shopping
+            </a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
+      <p style="font-size: 0.78rem; margin-top: 4px;">Branch: <code>feature/rrn-1247-food-catalogue</code> | Assigned to RRN 1247</p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notice hidden"></div>
+
+  <!-- JavaScript Modules -->
+  <script src="js/storage.js"></script>
+  <script src="js/cart.js"></script>
+</body>
+</html>
+

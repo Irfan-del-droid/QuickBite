@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickBite | Authentic Food Ordering</title>
+  <!-- Shared Golden Feast Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="site-header">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo" aria-label="QuickBite Home">
+        <span class="brand-icon">🍛</span>
+        <span class="brand-text">Quick<span class="brand-highlight">Bite</span></span>
+      </a>
+
+      <nav class="nav-links" aria-label="Main Navigation">
+        <a href="index.html" class="nav-link active" aria-current="page">Home</a>
+        <a href="login.html" class="nav-link">Login</a>
+        <a href="register.html" class="nav-link">Register</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <main class="hero-section">
+    <div class="hero-badge">Golden Feast Kitchen</div>
+    <h1 class="hero-title">Savor Authentic Flavors, Delivered Quick.</h1>
+    <p class="hero-subtitle">
+      Experience culinary excellence crafted with passion and fresh ingredients. Sign in to your QuickBite account to unlock personalized recommendations and priority delivery.
+    </p>
+
+    <!-- Session Status Card -->
+    <div id="home-session-status" class="status-card">
+      <div id="guest-view">
+        <h3>👋 Welcome, Guest!</h3>
+        <p>You are currently browsing as a guest. Sign in with your demo account or register a new one to test session authentication.</p>
+        <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <a href="login.html" class="btn btn-primary">Sign In</a>
+          <a href="register.html" class="btn btn-outline">Create Account</a>
+        </div>
+      </div>
+
+      <div id="logged-in-view" style="display: none;">
+        <h3>🎉 Welcome back, <span id="user-display-name">Foodie</span>!</h3>
+        <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+          <button type="button" id="btn-home-logout" class="btn btn-primary" data-action="logout">Log Out of QuickBite</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Shared Scripts -->
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    // Minimal Home UI session status handler
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = window.QuickBiteStorage ? window.QuickBiteStorage.getCurrentUser() : null;
+      const guestView = document.getElementById('guest-view');
+      const loggedInView = document.getElementById('logged-in-view');
+      const displayName = document.getElementById('user-display-name');
+
+      if (user && user.name) {
+        if (guestView) guestView.style.display = 'none';
+        if (loggedInView) loggedInView.style.display = 'block';
+        if (displayName) displayName.textContent = user.name;
+      } else {
+        if (guestView) guestView.style.display = 'block';
+        if (loggedInView) loggedInView.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
+

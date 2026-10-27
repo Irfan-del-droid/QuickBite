@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — QuickBite</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 2rem;
+      padding: 1rem 2rem 2.5rem 2rem;
+      align-items: start;
+    }
+    .form-card {
+      background: var(--card-white);
+      border-radius: var(--radius-lg);
+      padding: 1.8rem;
+      border: 1px solid var(--border-light);
+      box-shadow: var(--shadow-subtle);
+    }
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    .form-group label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.4rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-sm);
+      font-family: inherit;
+      font-size: 0.95rem;
+      transition: var(--transition);
+    }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary-yellow);
+      box-shadow: 0 0 0 3px rgba(251, 197, 49, 0.25);
+    }
+    @media (max-width: 850px) {
+      .checkout-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="main-wrapper">
+
+    <!-- Header Navigation -->
+    <header class="site-header">
+      <a href="index.html" class="brand-link">
+        <div class="logo-badge">🍔</div>
+        <div class="brand-text">
+          <h1>Quick<span>Bite</span></h1>
+          <p>Online Food Ordering & Delivery</p>
+        </div>
+      </a>
+
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="#" onclick="alert('My Orders module is under development by teammate.'); return false;">My Orders</a></li>
+          <li><a href="#" onclick="alert('Login module is under development by teammate.'); return false;">Login</a></li>
+          <li>
+            <a href="cart.html" class="cart-link-btn">
+              <span>🛒 Cart</span>
+              <span class="cart-badge" id="cart-badge">0</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Page Banner -->
+    <section class="page-banner">
+      <div>
+        <h2 class="page-title">Order Checkout</h2>
+        <p class="page-subtitle">Provide your delivery details and confirm your order.</p>
+      </div>
+      <div class="team-pill">QuickBite Delivery</div>
+    </section>
+
+    <!-- Checkout Content -->
+    <main class="checkout-grid">
+      <!-- Left: Delivery Address Form -->
+      <section class="form-card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.2rem;">Delivery Information</h3>
+        
+        <form id="checkout-form" onsubmit="handlePlaceOrder(event)">
+          <div class="form-group">
+            <label for="cust-name">Full Name *</label>
+            <input type="text" id="cust-name" class="form-control" placeholder="Enter your full name" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cust-phone">Phone Number *</label>
+            <input type="tel" id="cust-phone" class="form-control" placeholder="10-digit mobile number" pattern="[0-9]{10}" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cust-address">Delivery Address *</label>
+            <textarea id="cust-address" class="form-control" rows="3" placeholder="Apartment, Street, Landmark, City" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Payment Method</label>
+            <div style="display: flex; gap: 1rem; margin-top: 0.5rem; flex-wrap: wrap;">
+              <label style="display: flex; align-items: center; gap: 0.4rem; font-weight: 500; cursor: pointer;">
+                <input type="radio" name="payment" value="cod" checked> Cash on Delivery (COD)
+              </label>
+              <label style="display: flex; align-items: center; gap: 0.4rem; font-weight: 500; cursor: pointer;">
+                <input type="radio" name="payment" value="upi"> UPI / GPay
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-yellow" style="width: 100%; margin-top: 1rem; font-size: 1.05rem;">
+            Place Order Now →
+          </button>
+        </form>
+      </section>
+
+      <!-- Right: Order Summary -->
+      <aside class="bill-summary-wrapper">
+        <div class="bill-card">
+          <div class="bill-card-header">
+            <h3>Order Summary</h3>
+          </div>
+
+          <div id="checkout-items-summary" style="margin-bottom: 1rem; font-size: 0.88rem; max-height: 200px; overflow-y: auto;">
+            <!-- Populated dynamically -->
+          </div>
+
+          <div class="bill-rows">
+            <div class="bill-row">
+              <span>Subtotal</span>
+              <strong id="checkout-subtotal">₹0.00</strong>
+            </div>
+
+            <div class="bill-row">
+              <span>Delivery Fee</span>
+              <span id="checkout-delivery">₹0.00</span>
+            </div>
+
+            <div class="bill-row">
+              <span>Taxes (5%)</span>
+              <span id="checkout-tax">₹0.00</span>
+            </div>
+
+            <div class="bill-row total-row">
+              <span>Total Payable</span>
+              <strong id="checkout-total">₹0.00</strong>
+            </div>
+          </div>
+
+          <div class="bill-actions">
+            <a href="cart.html" class="btn-secondary" style="width: 100%;">
+              ← Edit Cart
+            </a>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
+    </footer>
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script>
+    function renderCheckoutSummary() {
+      const cart = getCart();
+      const bill = calculateCartBill();
+
+      const itemsContainer = document.getElementById("checkout-items-summary");
+      const subtotalEl = document.getElementById("checkout-subtotal");
+      const deliveryEl = document.getElementById("checkout-delivery");
+      const taxEl = document.getElementById("checkout-tax");
+      const totalEl = document.getElementById("checkout-total");
+
+      if (cart.length === 0) {
+        alert("Your cart is empty! Redirecting to food menu.");
+        window.location.href = "menu.html";
+        return;
+      }
+
+      itemsContainer.innerHTML = cart.map(item => `
+        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+          <span>${item.name} × ${item.quantity}</span>
+          <strong>${formatCurrency(item.price * item.quantity)}</strong>
+        </div>
+      `).join("");
+
+      subtotalEl.textContent = formatCurrency(bill.subtotal);
+      deliveryEl.textContent = bill.deliveryFee === 0 ? "FREE" : formatCurrency(bill.deliveryFee);
+      taxEl.textContent = formatCurrency(bill.tax);
+      totalEl.textContent = formatCurrency(bill.grandTotal);
+    }
+
+    function handlePlaceOrder(e) {
+      e.preventDefault();
+      const name = document.getElementById("cust-name").value;
+      const bill = calculateCartBill();
+      alert(`🎉 Thank you, ${name}!\n\nYour QuickBite order for ${formatCurrency(bill.grandTotal)} has been placed successfully!\nYour food is being prepared.`);
+      clearCart();
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", renderCheckoutSummary);
+  </script>
+</body>
+</html>
+

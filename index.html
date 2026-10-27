@@ -3,80 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickBite | Authentic Food Ordering</title>
-  <!-- Shared Golden Feast Stylesheet -->
+  <title>QuickBite — Online Food Ordering & Delivery</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  <!-- Large Rounded Main Container -->
+  <div class="main-wrapper">
 
-  <!-- Top Navigation Header -->
-  <header class="site-header">
-    <div class="nav-container">
-      <a href="index.html" class="brand-logo" aria-label="QuickBite Home">
-        <span class="brand-icon">🍛</span>
-        <span class="brand-text">Quick<span class="brand-highlight">Bite</span></span>
-      </a>
+    <!-- Unified Top Navigation Header -->
+    <header class="site-header">
+      <div class="nav-container">
+        <a href="index.html" class="brand-link" aria-label="QuickBite Home">
+          <div class="logo-badge">🍔</div>
+          <div class="brand-text">
+            <h1>Quick<span class="brand-highlight">Bite</span></h1>
+            <p>Online Food Ordering & Delivery</p>
+          </div>
+        </a>
 
-      <nav class="nav-links" aria-label="Main Navigation">
-        <a href="index.html" class="nav-link active" aria-current="page">Home</a>
-        <a href="login.html" class="nav-link">Login</a>
-        <a href="register.html" class="nav-link">Register</a>
-      </nav>
-    </div>
-  </header>
+        <nav>
+          <ul class="nav-links">
+            <li><span class="team-pill">PROJECT RRN 1247</span></li>
+            <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
+            <li><a href="menu.html" class="nav-link">Menu</a></li>
+            <li><a href="login.html" id="nav-login-link" class="nav-link">Login</a></li>
+            <li><a href="register.html" id="nav-register-link" class="nav-link">Register</a></li>
+            <li>
+              <a href="cart.html" class="cart-link-btn" aria-label="View Shopping Cart">
+                <span>🛒 Cart</span>
+                <span class="cart-badge" id="cart-badge">0</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-  <!-- Hero Section -->
-  <main class="hero-section">
-    <div class="hero-badge">Golden Feast Kitchen</div>
-    <h1 class="hero-title">Savor Authentic Flavors, Delivered Quick.</h1>
-    <p class="hero-subtitle">
-      Experience culinary excellence crafted with passion and fresh ingredients. Sign in to your QuickBite account to unlock personalized recommendations and priority delivery.
-    </p>
-
-    <!-- Session Status Card -->
-    <div id="home-session-status" class="status-card">
-      <div id="guest-view">
-        <h3>👋 Welcome, Guest!</h3>
-        <p>You are currently browsing as a guest. Sign in with your demo account or register a new one to test session authentication.</p>
-        <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <a href="login.html" class="btn btn-primary">Sign In</a>
-          <a href="register.html" class="btn btn-outline">Create Account</a>
-        </div>
+    <!-- Hero Section -->
+    <section class="hero-box">
+      <div class="hero-badge" style="display: inline-block; background-color: var(--warm-cream); color: var(--charcoal); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 50px; margin-bottom: 0.8rem; border: 1px solid rgba(255, 200, 87, 0.7);">
+        Golden Feast Kitchen
+      </div>
+      <h2>Craving Delicious Food Delivered Fast?</h2>
+      <p>Savor authentic culinary flavors crafted with passion and fresh ingredients. Browse our food catalogue or access your personalized QuickBite account below.</p>
+      
+      <div class="hero-cta">
+        <a href="menu.html" class="btn-yellow">Browse Food Menu →</a>
+        <a href="cart.html" class="btn-secondary">View Shopping Cart 🛒</a>
       </div>
 
-      <div id="logged-in-view" style="display: none;">
-        <h3>🎉 Welcome back, <span id="user-display-name">Foodie</span>!</h3>
-        <div style="margin-top: 1.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-          <button type="button" id="btn-home-logout" class="btn btn-primary" data-action="logout">Log Out of QuickBite</button>
+      <!-- Teammate's Interactive Session Status Card (RRN 1246) -->
+      <div id="home-session-status" class="status-card">
+        <div id="guest-view">
+          <h3>👋 Welcome, Guest!</h3>
+          <p>You are currently browsing as a guest. Sign in with your demo account or register a new one to unlock personalized recommendations.</p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <a href="login.html" class="btn btn-primary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Sign In</a>
+            <a href="register.html" class="btn btn-secondary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Create Account</a>
+          </div>
+        </div>
+
+        <div id="logged-in-view" style="display: none;">
+          <h3>🎉 Welcome back, <span id="user-display-name">Foodie</span>!</h3>
+          <p>You are logged into your QuickBite account. Ready to order your favorite dishes?</p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+            <a href="menu.html" class="btn btn-primary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Order Now →</a>
+            <button type="button" id="btn-home-logout" class="btn btn-secondary" data-action="logout" style="padding: 0.5rem 1.1rem; font-size: 0.85rem; cursor: pointer;">
+              Log Out
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </main>
+    </section>
+
+    <!-- Featured Food Catalogue Section (RRN 1247) -->
+    <section class="featured-section">
+      <div class="featured-header">
+        <div>
+          <h3 style="font-size: 1.4rem; font-weight: 700;">Featured Delicacies</h3>
+          <p style="color: var(--text-muted); font-size: 0.9rem;">Customer favorites prepared fresh to order</p>
+        </div>
+        <a href="menu.html" class="btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 1rem;">View Full Menu</a>
+      </div>
+
+      <div class="food-grid" id="featured-food-grid">
+        <!-- Rendered dynamically from qb_food_items -->
+      </div>
+    </section>
+
+    <!-- Site Footer -->
+    <footer class="site-footer">
+      <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
+      <p style="font-size: 0.78rem; margin-top: 4px;">Branch: <code>feature/rrn-1247-food-catalogue</code></p>
+    </footer>
+
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast-notice hidden"></div>
 
   <!-- Shared Scripts -->
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script>
-    // Minimal Home UI session status handler
-    document.addEventListener('DOMContentLoaded', () => {
+    // Toast Feedback
+    let toastTimer = null;
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      if (!toast) return;
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.add("hidden");
+      }, 2500);
+    }
+
+    // Render Featured Food Items
+    function renderFeatured() {
+      const grid = document.getElementById("featured-food-grid");
+      if (!grid) return;
+      const items = getFoodItems().slice(0, 4);
+      grid.innerHTML = items.map(item => `
+        <div class="food-card">
+          <div class="food-card-img-wrap">
+            <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80'">
+            <span class="food-category-badge">${item.category}</span>
+          </div>
+          <div class="food-card-body">
+            <h4 class="food-card-title">${item.name}</h4>
+            <p class="food-card-desc">${item.description}</p>
+            <div class="food-card-footer">
+              <span class="food-card-price">${formatCurrency(item.price)}</span>
+              <button class="btn-add-food" onclick="handleAddToCart(${item.id})">
+                <span>+</span> Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // Add to Cart Handler
+    function handleAddToCart(id) {
+      const items = getFoodItems();
+      const product = items.find(i => Number(i.id) === Number(id));
+      if (product) {
+        addToCart(product);
+        showToast(`Added "${product.name}" to cart! 🛒`);
+      }
+    }
+
+    // Session Status Handler (RRN 1246 Integration)
+    function updateSessionUI() {
       const user = window.QuickBiteStorage ? window.QuickBiteStorage.getCurrentUser() : null;
-      const guestView = document.getElementById('guest-view');
-      const loggedInView = document.getElementById('logged-in-view');
-      const displayName = document.getElementById('user-display-name');
+      const guestView = document.getElementById("guest-view");
+      const loggedInView = document.getElementById("logged-in-view");
+      const displayName = document.getElementById("user-display-name");
+      const loginNav = document.getElementById("nav-login-link");
+      const registerNav = document.getElementById("nav-register-link");
 
       if (user && user.name) {
-        if (guestView) guestView.style.display = 'none';
-        if (loggedInView) loggedInView.style.display = 'block';
+        if (guestView) guestView.style.display = "none";
+        if (loggedInView) loggedInView.style.display = "block";
         if (displayName) displayName.textContent = user.name;
+        if (loginNav) loginNav.style.display = "none";
+        if (registerNav) registerNav.textContent = `Hi, ${user.name}`;
       } else {
-        if (guestView) guestView.style.display = 'block';
-        if (loggedInView) loggedInView.style.display = 'none';
+        if (guestView) guestView.style.display = "block";
+        if (loggedInView) loggedInView.style.display = "none";
+        if (loginNav) loginNav.style.display = "inline-block";
+        if (registerNav) registerNav.textContent = "Register";
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderFeatured();
+      updateSessionUI();
+
+      // Logout button click handler
+      const logoutBtn = document.getElementById("btn-home-logout");
+      if (logoutBtn) {
+        logoutBtn.addEventListener("click", () => {
+          if (window.QuickBiteStorage) {
+            window.QuickBiteStorage.clearCurrentUser();
+          }
+          showToast("You have been logged out.");
+          updateSessionUI();
+        });
       }
     });
   </script>
 </body>
 </html>
-

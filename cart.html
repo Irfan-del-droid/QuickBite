@@ -24,8 +24,10 @@
         <ul class="nav-links">
           <li><a href="index.html">Home</a></li>
           <li><a href="menu.html">Menu</a></li>
-          <li><a href="#" onclick="alert('My Orders module is under development by teammate.'); return false;">My Orders</a></li>
-          <li><a href="#" onclick="alert('Login module is under development by teammate.'); return false;">Login</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="#" onclick="alert('Order history is not available yet.'); return false;">My Orders</a></li>
+          <li><a href="login.html" id="nav-login-link">Login</a></li>
+          <li><a href="register.html" id="nav-register-link">Register</a></li>
           <li>
             <a href="cart.html" class="cart-link-btn active">
               <span>🛒 Cart</span>
@@ -42,7 +44,6 @@
         <h2 class="page-title">Your Shopping Cart</h2>
         <p class="page-subtitle">Review your selected meals, adjust quantities, and calculate your final bill.</p>
       </div>
-      <div class="team-pill">Module: Shopping Cart | PROJECT RRN 1247</div>
     </section>
 
     <!-- Main Shopping Cart Content Grid -->
@@ -105,7 +106,6 @@
     <!-- Site Footer -->
     <footer class="site-footer">
       <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
-      <p style="font-size: 0.78rem; margin-top: 4px;">Branch: <code>feature/rrn-1247-food-catalogue</code> | Assigned to RRN 1247</p>
     </footer>
 
   </div>
@@ -116,6 +116,6 @@
   <!-- JavaScript Modules -->
   <script src="js/storage.js"></script>
   <script src="js/cart.js"></script>
+  <script src="js/auth.js"></script>
 </body>
 </html>
-

@@ -26,9 +26,10 @@
 
         <nav>
           <ul class="nav-links">
-            <li><span class="team-pill">PROJECT RRN 1247</span></li>
             <li><a href="index.html" class="nav-link active" aria-current="page">Home</a></li>
             <li><a href="menu.html" class="nav-link">Menu</a></li>
+            <li><a href="#about" class="nav-link">About</a></li>
+            <li><a href="#" class="nav-link" onclick="alert('Order history is not available yet.'); return false;">My Orders</a></li>
             <li><a href="login.html" id="nav-login-link" class="nav-link">Login</a></li>
             <li><a href="register.html" id="nav-register-link" class="nav-link">Register</a></li>
             <li>
@@ -44,42 +45,62 @@
 
     <!-- Hero Section -->
     <section class="hero-box">
-      <div class="hero-badge" style="display: inline-block; background-color: var(--warm-cream); color: var(--charcoal); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; padding: 0.35rem 0.85rem; border-radius: 50px; margin-bottom: 0.8rem; border: 1px solid rgba(255, 200, 87, 0.7);">
-        Golden Feast Kitchen
-      </div>
-      <h2>Craving Delicious Food Delivered Fast?</h2>
-      <p>Savor authentic culinary flavors crafted with passion and fresh ingredients. Browse our food catalogue or access your personalized QuickBite account below.</p>
-      
-      <div class="hero-cta">
-        <a href="menu.html" class="btn-yellow">Browse Food Menu →</a>
-        <a href="cart.html" class="btn-secondary">View Shopping Cart 🛒</a>
-      </div>
+      <div class="hero-copy">
+        <div class="hero-badge">Golden Feast Kitchen</div>
+        <h2>Good food, happy moments.</h2>
+        <p>Discover the comforting flavors you love, prepared fresh and delivered to your door. Your next favorite meal is just a few clicks away.</p>
 
-      <!-- Teammate's Interactive Session Status Card (RRN 1246) -->
-      <div id="home-session-status" class="status-card">
-        <div id="guest-view">
-          <h3>👋 Welcome, Guest!</h3>
-          <p>You are currently browsing as a guest. Sign in with your demo account or register a new one to unlock personalized recommendations.</p>
-          <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap;">
-            <a href="login.html" class="btn btn-primary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Sign In</a>
-            <a href="register.html" class="btn btn-secondary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Create Account</a>
-          </div>
+        <div class="hero-cta">
+          <a href="menu.html" class="btn-yellow">Explore the Menu <span aria-hidden="true">→</span></a>
+          <a href="cart.html" class="btn-secondary">View Your Cart <span aria-hidden="true">🛒</span></a>
         </div>
 
-        <div id="logged-in-view" style="display: none;">
-          <h3>🎉 Welcome back, <span id="user-display-name">Foodie</span>!</h3>
-          <p>You are logged into your QuickBite account. Ready to order your favorite dishes?</p>
-          <div style="margin-top: 1rem; display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-            <a href="menu.html" class="btn btn-primary" style="padding: 0.5rem 1.1rem; font-size: 0.85rem;">Order Now →</a>
-            <button type="button" id="btn-home-logout" class="btn btn-secondary" data-action="logout" style="padding: 0.5rem 1.1rem; font-size: 0.85rem; cursor: pointer;">
-              Log Out
-            </button>
+        <div class="hero-trust-row" aria-label="QuickBite highlights">
+          <span>✦ Freshly prepared</span>
+          <span>✦ Indian favorites</span>
+          <span>✦ Easy ordering</span>
+        </div>
+
+        <!-- Interactive session status for the authentication module -->
+        <div id="home-session-status" class="status-card">
+          <div id="guest-view">
+            <h3>👋 Welcome, Guest!</h3>
+            <p>Sign in or create an account to make your QuickBite experience your own.</p>
+            <div class="session-actions">
+              <a href="login.html" class="btn btn-primary">Sign In</a>
+              <a href="register.html" class="btn btn-secondary">Create Account</a>
+            </div>
           </div>
+
+          <div id="logged-in-view" style="display: none;">
+            <h3>🎉 Welcome back, <span id="user-display-name">Foodie</span>!</h3>
+            <p>You are logged into QuickBite. Ready to order your favorite dishes?</p>
+            <div class="session-actions">
+              <a href="menu.html" class="btn btn-primary">Order Now <span aria-hidden="true">→</span></a>
+              <button type="button" id="btn-home-logout" class="btn btn-secondary" data-action="logout">Log Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <img
+          src="quickbite_golden_feast/images/masala-dosa.webp"
+          alt="Golden masala dosa served with chutney"
+          fetchpriority="high"
+        >
+        <div class="hero-image-note">
+          <span>From our kitchen</span>
+          <strong>Made fresh, made with care</strong>
         </div>
       </div>
     </section>
 
-    <!-- Featured Food Catalogue Section (RRN 1247) -->
+    <section class="about-strip" id="about">
+      <span class="about-eyebrow">A little more joy in every bite</span>
+      <p>From South Indian comfort food to North Indian classics, QuickBite brings your favorite flavors together in one friendly place.</p>
+    </section>
+
+    <!-- Featured food catalogue -->
     <section class="featured-section">
       <div class="featured-header">
         <div>
@@ -97,7 +118,6 @@
     <!-- Site Footer -->
     <footer class="site-footer">
       <p><strong>QuickBite</strong> &copy; 2026 — Online Food Ordering and Delivery Management System</p>
-      <p style="font-size: 0.78rem; margin-top: 4px;">Branch: <code>feature/rrn-1247-food-catalogue</code></p>
     </footer>
 
   </div>
@@ -130,8 +150,9 @@
       grid.innerHTML = items.map(item => `
         <div class="food-card">
           <div class="food-card-img-wrap">
-            <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=500&q=80'">
+            <img src="${item.image}" alt="${item.name}" loading="lazy" onerror="this.onerror=null;this.src='quickbite_golden_feast/images/idli-sambar.jpg'">
             <span class="food-category-badge">${item.category}</span>
+            <span class="food-diet-badge ${item.veg === true ? "veg" : "non-veg"}">${item.veg === true ? "Vegetarian" : "Non-vegetarian"}</span>
           </div>
           <div class="food-card-body">
             <h4 class="food-card-title">${item.name}</h4>
@@ -152,8 +173,7 @@
       const items = getFoodItems();
       const product = items.find(i => Number(i.id) === Number(id));
       if (product) {
-        addToCart(product);
-        showToast(`Added "${product.name}" to cart! 🛒`);
+        if (addToCart(product)) showToast(`Added "${product.name}" to cart! 🛒`);
       }
     }
 

@@ -163,7 +163,7 @@ function renderCartPage() {
           src="${item.image}" 
           alt="${item.name}" 
           loading="lazy"
-          onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=150&q=80'"
+          onerror="this.onerror=null;this.src='quickbite_golden_feast/images/idli-sambar.jpg'"
         >
         <div class="cart-item-info">
           <h4 class="cart-item-name">${item.name}</h4>
@@ -232,4 +232,3 @@ document.addEventListener("DOMContentLoaded", () => {
     clearBtn.addEventListener("click", handleClearCart);
   }
 });
-

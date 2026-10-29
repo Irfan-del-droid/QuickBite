@@ -22,8 +22,15 @@
 
       <nav class="nav-links" aria-label="Main Navigation">
         <a href="index.html" class="nav-link">Home</a>
-        <a href="login.html" class="nav-link">Login</a>
-        <a href="register.html" class="nav-link active" aria-current="page">Register</a>
+        <a href="menu.html" class="nav-link">Menu</a>
+        <a href="index.html#about" class="nav-link">About</a>
+        <a href="#" class="nav-link" onclick="alert('Order history is not available yet.'); return false;">My Orders</a>
+        <a href="login.html" id="nav-login-link" class="nav-link">Login</a>
+        <a href="register.html" id="nav-register-link" class="nav-link active" aria-current="page">Register</a>
+        <a href="cart.html" class="cart-link-btn" aria-label="View Shopping Cart">
+          <span>🛒 Cart</span>
+          <span class="cart-badge" id="cart-badge">0</span>
+        </a>
       </nav>
     </div>
   </header>
@@ -166,4 +173,3 @@
   <script src="js/auth.js"></script>
 </body>
 </html>
-

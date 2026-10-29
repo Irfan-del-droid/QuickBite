@@ -1150,3 +1150,540 @@ button, input, select, textarea {
     padding: 1rem;
   }
 }
+
+/* --------------------------------------------------------------------------
+   QuickBite shared visual refresh
+   -------------------------------------------------------------------------- */
+:root {
+  --primary-yellow: #f4c542;
+  --primary-yellow-hover: #e4b42f;
+  --primary-gold: #f4c542;
+  --primary-gold-hover: #e4b42f;
+  --primary-gold-dark: #9a6b0d;
+  --bg-yellow: #f4c542;
+  --container-light-blue: #eaf4fb;
+  --warm-cream: #fff6dc;
+  --shadow-lg: 0 18px 48px rgba(49, 58, 65, 0.14);
+}
+
+html,
+body {
+  background: #f4c542;
+  background-attachment: initial;
+  overflow-x: hidden;
+}
+
+body {
+  padding: 1rem;
+}
+
+.main-wrapper {
+  max-width: 1320px;
+  background: var(--container-light-blue);
+  border-radius: 30px;
+  box-shadow: 0 20px 55px rgba(63, 51, 15, 0.16);
+}
+
+.site-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e8edf1;
+}
+
+.nav-links {
+  gap: 0.3rem;
+}
+
+.nav-links a.nav-link,
+.nav-link {
+  padding: 0.5rem 0.7rem;
+  white-space: nowrap;
+}
+
+.team-pill {
+  background: var(--warm-cream);
+  border-color: #f1dfaa;
+}
+
+.hero-box {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  min-height: 480px;
+  padding: clamp(1.5rem, 5vw, 4rem);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  margin: 0;
+}
+
+.hero-copy,
+.hero-visual {
+  min-width: 0;
+}
+
+.hero-badge {
+  display: inline-flex;
+  margin-bottom: 1rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid #f1dfaa;
+  border-radius: var(--radius-pill);
+  background: var(--warm-cream);
+  color: var(--charcoal);
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hero-box h2 {
+  max-width: 640px;
+  margin-bottom: 0.85rem;
+  font-size: clamp(2.35rem, 5.2vw, 4.3rem);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+
+.hero-box .hero-copy > p {
+  max-width: 540px;
+  margin: 0 0 1.5rem;
+  color: var(--text-body);
+  font-size: 1.03rem;
+}
+
+.hero-cta {
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+.hero-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 1rem;
+  margin-top: 1.1rem;
+  color: var(--text-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.status-card {
+  max-width: 530px;
+  margin: 1.35rem 0 0;
+  padding: 1rem 1.15rem;
+  border-radius: 16px;
+}
+
+.session-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 0.8rem;
+}
+
+.session-actions .btn {
+  padding: 0.55rem 1rem;
+  font-size: 0.84rem;
+}
+
+.hero-visual {
+  position: relative;
+  min-height: 390px;
+  overflow: hidden;
+  border: 10px solid rgba(255, 255, 255, 0.78);
+  border-radius: 42% 42% 32px 32px;
+  background: var(--warm-cream);
+  box-shadow: var(--shadow-md);
+}
+
+.hero-visual img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero-image-note {
+  position: absolute;
+  right: 1rem;
+  bottom: 1rem;
+  left: 1rem;
+  display: grid;
+  gap: 0.15rem;
+  padding: 1rem 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: var(--shadow-subtle);
+}
+
+.hero-image-note span {
+  color: var(--text-muted);
+  font-size: 0.76rem;
+}
+
+.hero-image-note strong {
+  color: var(--charcoal);
+  font-size: 1rem;
+}
+
+.about-strip {
+  margin: 0 2rem 1.5rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.72);
+  text-align: center;
+}
+
+.about-eyebrow {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: var(--primary-gold-dark);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.about-strip p {
+  color: var(--text-body);
+}
+
+.featured-section,
+.catalogue-container,
+.cart-content-grid,
+.checkout-grid {
+  padding-right: clamp(1rem, 4vw, 2.5rem);
+  padding-left: clamp(1rem, 4vw, 2.5rem);
+}
+
+.featured-header {
+  gap: 1rem;
+}
+
+.featured-header h3 {
+  color: var(--charcoal);
+}
+
+.page-banner {
+  padding: 2rem clamp(1rem, 4vw, 2.5rem) 1rem;
+}
+
+.page-title {
+  font-size: clamp(1.65rem, 3vw, 2.15rem);
+  letter-spacing: -0.035em;
+}
+
+.menu-tools {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+}
+
+.menu-search {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: min(100%, 430px);
+  min-height: 48px;
+  padding: 0 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  background: var(--card-white);
+  box-shadow: var(--shadow-sm);
+  color: var(--text-muted);
+  font-size: 1.35rem;
+}
+
+.menu-search input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-dark);
+  font-size: 0.94rem;
+}
+
+.menu-search:focus-within {
+  border-color: var(--primary-gold-dark);
+  box-shadow: 0 0 0 3px var(--focus-ring);
+}
+
+.veg-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.veg-filter input {
+  width: 18px;
+  height: 18px;
+  accent-color: #328263;
+}
+
+.category-pill {
+  padding: 0.55rem 1rem;
+  border-color: #dce5eb;
+}
+
+.food-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 235px), 1fr));
+  gap: 1.2rem;
+}
+
+.food-card {
+  border-radius: 18px;
+}
+
+.food-card-img-wrap {
+  height: 190px;
+  background: var(--warm-cream);
+}
+
+.food-card-body {
+  padding: 1rem;
+}
+
+.food-card-title {
+  line-height: 1.35;
+}
+
+.food-diet-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  padding: 0.24rem 0.55rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.95);
+  color: #26734f;
+  font-size: 0.68rem;
+  font-weight: 700;
+}
+
+.food-diet-badge.non-veg {
+  color: #a63c32;
+}
+
+.btn-add-food:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.menu-empty-state {
+  margin: 1rem 0;
+  padding: 2rem 1rem;
+  border: 1px dashed #cbd9e2;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.65);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.menu-empty-state[hidden] {
+  display: none;
+}
+
+.cart-item-card,
+.form-card,
+.bill-card,
+.empty-cart-card {
+  border-radius: 20px;
+}
+
+.form-control,
+.form-input {
+  border-radius: 10px;
+}
+
+.auth-page {
+  min-height: 100vh;
+  background: #f4c542;
+}
+
+.auth-page .site-header,
+.auth-page .auth-main {
+  width: min(1320px, 100%);
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.auth-page .site-header {
+  border-radius: 22px 22px 0 0;
+}
+
+.auth-page .auth-main {
+  min-height: 72vh;
+  border-radius: 0 0 28px 28px;
+  background: var(--container-light-blue);
+}
+
+.auth-page .nav-links {
+  justify-content: flex-end;
+}
+
+.checkout-grid {
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 380px);
+}
+
+@media (max-width: 1000px) {
+  .site-header {
+    padding-right: 1.25rem;
+    padding-left: 1.25rem;
+  }
+
+  .hero-box {
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 0.8fr);
+  }
+
+  .hero-visual {
+    min-height: 330px;
+  }
+
+  .team-pill {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  body {
+    padding: 0.55rem;
+  }
+
+  .main-wrapper {
+    border-radius: 22px;
+  }
+
+  .site-header {
+    position: static;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .nav-container {
+    justify-content: center;
+    padding: 0;
+  }
+
+  .nav-links {
+    justify-content: center;
+  }
+
+  .hero-box {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1.5rem;
+  }
+
+  .hero-visual {
+    min-height: 300px;
+    max-height: 380px;
+    border-radius: 26px;
+  }
+
+  .about-strip {
+    margin: 0 1rem 1.2rem;
+  }
+
+  .auth-page .site-header {
+    border-radius: 18px 18px 0 0;
+  }
+
+  .auth-page .auth-main {
+    border-radius: 0 0 22px 22px;
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-text p {
+    font-size: 0.65rem;
+  }
+
+  .nav-links {
+    gap: 0.15rem;
+  }
+
+  .nav-links a.nav-link,
+  .nav-link {
+    padding: 0.4rem 0.48rem;
+    font-size: 0.78rem;
+  }
+
+  .cart-link-btn {
+    padding: 0.42rem 0.7rem;
+  }
+
+  .hero-box h2 {
+    font-size: clamp(2rem, 10vw, 2.7rem);
+  }
+
+  .hero-cta > a {
+    width: 100%;
+  }
+
+  .hero-trust-row {
+    gap: 0.35rem 0.7rem;
+    font-size: 0.72rem;
+  }
+
+  .menu-tools {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .menu-search {
+    width: 100%;
+  }
+
+  .category-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    scrollbar-width: thin;
+  }
+
+  .category-pill {
+    flex: 0 0 auto;
+  }
+
+  .featured-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cart-item-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem;
+  }
+
+  .cart-item-img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .cart-item-controls-wrap {
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  .cart-item-subtotal {
+    min-width: auto;
+    font-size: 0.95rem;
+  }
+
+  .auth-page .nav-links {
+    justify-content: center;
+  }
+}

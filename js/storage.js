@@ -34,81 +34,528 @@
     }
   ];
 
-  // Default initial food catalogue items
+  const FOOD_NAME_ALIASES = {
+    'idli sambar': 'Idli',
+    'onion uthappam': 'Onion Uttapam',
+    'royal chicken biryani': 'Chicken Biryani',
+    'vegetable biryani': 'Veg Biryani',
+    'samosa (2 pcs)': 'Samosa',
+    'gulab jamun (4 pcs)': 'Gulab Jamun',
+    'gajar ka halwa': 'Gajar Halwa'
+  };
+  // Default initial food catalogue items (30+ items across 6 categories)
   const DEFAULT_FOOD_ITEMS = [
+    // ── South Indian ──────────────────────────────────────────────────────────
     {
       id: 1,
-      name: "Classic Cheese Burger",
-      description: "Grilled juicy patty, melting cheddar cheese, fresh lettuce, and special burger sauce.",
-      price: 149,
-      category: "Burgers",
-      image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Masala Dosa",
+      description: "Crispy golden dosa filled with spiced potato masala, served with coconut chutney and sambar.",
+      price: 89,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     },
     {
       id: 2,
-      name: "Crispy Chicken Burger",
-      description: "Golden fried chicken breast with creamy mayo, pickles, and crispy shredded cabbage.",
-      price: 189,
-      category: "Burgers",
-      image: "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Idli",
+      description: "Soft steamed rice idlis served with piping hot sambar and fresh coconut chutney.",
+      price: 69,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     },
     {
       id: 3,
-      name: "Farmhouse Veggie Pizza",
-      description: "Topped with crunchy bell peppers, red onions, mushrooms, corn, and mozzarella cheese.",
-      price: 299,
-      category: "Pizza",
-      image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Chettinad Chicken Curry",
+      description: "Bold, spicy Chettinad chicken cooked with freshly ground spices and kalpasi.",
+      price: 229,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
     },
     {
       id: 4,
-      name: "Pepperoni Delight Pizza",
-      description: "Crispy crust layered with herb tomato marinara, melted mozzarella, and savory pepperoni.",
-      price: 379,
-      category: "Pizza",
-      image: "https://images.unsplash.com/photo-1628840042765-356cda07504e?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Onion Uttapam",
+      description: "Thick soft rice pancake topped with caramelized onions and green chillies, served with chutney.",
+      price: 79,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1630383249896-483b843b4c1d?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     },
     {
       id: 5,
-      name: "Royal Chicken Biryani",
-      description: "Aromatic aged basmati rice cooked with tender marinated chicken and traditional spices.",
-      price: 269,
-      category: "Meals",
-      image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Medu Vada",
+      description: "Crispy, golden deep-fried lentil doughnuts served with coconut chutney and spiced sambar.",
+      price: 59,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     },
+    // ── North Indian ──────────────────────────────────────────────────────────
     {
       id: 6,
-      name: "Paneer Butter Masala Thali",
-      description: "Soft paneer cubes in rich butter gravy, served with aromatic rice and hot butter naan.",
-      price: 239,
-      category: "Meals",
+      name: "Paneer Butter Masala",
+      description: "Soft paneer cubes simmered in a rich, creamy tomato-butter gravy. Served with naan.",
+      price: 219,
+      category: "North Indian",
       image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=500&q=80",
-      available: true
+      available: true,
+      veg: true
     },
     {
       id: 7,
-      name: "Choco Lava Molten Cake",
-      description: "Warm, rich chocolate cake with a molten, decadent chocolate center oozing out.",
-      price: 119,
-      category: "Desserts",
-      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=500&q=80",
-      available: true
+      name: "Dal Makhani",
+      description: "Slow-cooked black lentils in a buttery tomato gravy with cream, best paired with tandoor roti.",
+      price: 179,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     },
     {
       id: 8,
+      name: "Butter Chicken",
+      description: "Tender tandoori chicken pieces in a velvety, mildly spiced butter and tomato gravy.",
+      price: 249,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 9,
+      name: "Chole Bhature",
+      description: "Spicy chickpea curry served with fluffy deep-fried bhature bread — a classic Punjabi combo.",
+      price: 129,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1626132647523-66c2e3b57b00?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 10,
+      name: "Aloo Paratha",
+      description: "Whole-wheat flatbread stuffed with spiced mashed potato, served with yogurt and pickle.",
+      price: 99,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1571167530149-c1105da4b1e0?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    // ── Rice & Biryani ────────────────────────────────────────────────────────
+    {
+      id: 11,
+      name: "Chicken Biryani",
+      description: "Aromatic aged basmati rice slow-cooked with tender marinated chicken and traditional spices.",
+      price: 269,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 12,
+      name: "Hyderabadi Mutton Dum Biryani",
+      description: "Slow-cooked mutton layered with saffron-infused basmati rice in authentic dum style.",
+      price: 329,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1633945274405-b6c8069047b0?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 13,
+      name: "Veg Biryani",
+      description: "Fragrant basmati rice cooked with seasonal vegetables, whole spices, and fried onions.",
+      price: 199,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1645177628172-a4fa81dac3c7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 14,
+      name: "Egg Fried Rice",
+      description: "Wok-tossed long-grain rice with scrambled eggs, spring onions, and soy sauce.",
+      price: 139,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 15,
+      name: "Jeera Rice",
+      description: "Fluffy basmati rice tempered with cumin seeds, ghee, and fresh coriander.",
+      price: 99,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    // ── Snacks ────────────────────────────────────────────────────────────────
+    {
+      id: 16,
+      name: "Samosa",
+      description: "Crispy pastry pockets stuffed with spiced potato and green peas, served with mint chutney.",
+      price: 49,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 17,
+      name: "Pani Puri",
+      description: "Hollow crispy puris filled with spiced tamarind water, chickpeas, and tangy chutneys.",
+      price: 59,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 18,
+      name: "Veg Spring Rolls (4 pcs)",
+      description: "Golden crispy rolls stuffed with stir-fried vegetables and glass noodles.",
+      price: 89,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 19,
+      name: "Chicken 65",
+      description: "Deep-fried spicy chicken bites marinated in yogurt, ginger, garlic, and red chillies.",
+      price: 159,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 20,
+      name: "Masala Fries",
+      description: "Crispy golden potato fries tossed with spicy chaat masala and a squeeze of lime.",
+      price: 79,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 21,
+      name: "Bhel Puri",
+      description: "Mumbai-style puffed rice tossed with chutneys, onions, tomatoes, sev, and coriander.",
+      price: 49,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    // ── Desserts ──────────────────────────────────────────────────────────────
+    {
+      id: 22,
+      name: "Gulab Jamun",
+      description: "Soft milk-solid dumplings soaked in rose-flavoured sugar syrup, served warm.",
+      price: 69,
+      category: "Desserts",
+      image: "https://images.unsplash.com/photo-1666120636359-ab5afb09c3df?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 23,
+      name: "Choco Lava Molten Cake",
+      description: "Warm rich chocolate cake with a molten decadent chocolate center oozing out.",
+      price: 119,
+      category: "Desserts",
+      image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 24,
+      name: "Rasmalai",
+      description: "Soft chenna discs soaked in chilled saffron and cardamom-flavoured cream.",
+      price: 89,
+      category: "Desserts",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 25,
+      name: "Mango Kulfi",
+      description: "Traditional Indian frozen dessert made with condensed milk and fresh Alphonso mango.",
+      price: 79,
+      category: "Desserts",
+      image: "https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 26,
+      name: "Gajar Halwa",
+      description: "Slow-cooked grated carrot dessert with milk, ghee, cardamom, and crunchy cashews.",
+      price: 89,
+      category: "Desserts",
+      image: "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    // ── Drinks ────────────────────────────────────────────────────────────────
+    {
+      id: 27,
       name: "Mango Alphonso Smoothie",
       description: "Fresh Alphonso mango pulp blended with chilled yogurt and a dash of organic honey.",
       price: 89,
-      category: "Beverages",
+      category: "Drinks",
       image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=500&q=80",
-      available: true
+      available: true,
+      veg: true
+    },
+    {
+      id: 28,
+      name: "Masala Chai",
+      description: "Strong ginger-cardamom tea brewed with milk and aromatic whole spices.",
+      price: 39,
+      category: "Drinks",
+      image: "https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 29,
+      name: "Sweet Lassi",
+      description: "Creamy chilled yogurt drink sweetened with sugar and topped with a layer of malai.",
+      price: 59,
+      category: "Drinks",
+      image: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 30,
+      name: "Fresh Lime Soda",
+      description: "Chilled sparkling soda with freshly squeezed lime, rock salt, and roasted cumin.",
+      price: 49,
+      category: "Drinks",
+      image: "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 31,
+      name: "Filter Coffee",
+      description: "South Indian decoction coffee brewed with chicory, served frothy with full-cream milk.",
+      price: 49,
+      category: "Drinks",
+      image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 33,
+      name: "Ghee Pongal",
+      description: "Comforting rice and lentils tempered with ghee, pepper, cumin, and cashews.",
+      price: 89,
+      category: "South Indian",
+      image: "quickbite_golden_feast/images/ven-pongal.jpg",
+      available: true,
+      veg: true
+    },
+    {
+      id: 34,
+      name: "Plain Dosa",
+      description: "A crisp, golden rice-and-lentil crepe served with sambar and coconut chutney.",
+      price: 69,
+      category: "South Indian",
+      image: "quickbite_golden_feast/images/masala-dosa.webp",
+      available: true,
+      veg: true
+    },
+    {
+      id: 35,
+      name: "Rava Dosa",
+      description: "Lacy, crisp semolina dosa with pepper and herbs, served with fresh chutneys.",
+      price: 99,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 36,
+      name: "Poori Masala",
+      description: "Puffed golden pooris served with gently spiced potato masala.",
+      price: 99,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 37,
+      name: "Curd Rice",
+      description: "Creamy yogurt rice finished with a fragrant mustard-seed and curry-leaf tempering.",
+      price: 79,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 38,
+      name: "Lemon Rice",
+      description: "Bright South Indian rice with lemon, turmeric, peanuts, and curry leaves.",
+      price: 79,
+      category: "South Indian",
+      image: "https://images.unsplash.com/photo-1596560548464-f010549b84d7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 39,
+      name: "Butter Naan",
+      description: "Soft tandoor-baked naan brushed with butter, perfect for rich curries.",
+      price: 49,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 40,
+      name: "Rajma Chawal",
+      description: "Slow-simmered kidney bean curry served with steamed basmati rice.",
+      price: 149,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 41,
+      name: "Palak Paneer",
+      description: "Tender paneer cubes in a gently spiced spinach and cream gravy.",
+      price: 199,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 42,
+      name: "Tandoori Roti",
+      description: "Fresh whole-wheat flatbread baked in the tandoor and served warm.",
+      price: 29,
+      category: "North Indian",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 43,
+      name: "Paneer Biryani",
+      description: "Fragrant basmati rice layered with marinated paneer, herbs, and warm spices.",
+      price: 219,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1645177628172-a4fa81dac3c7?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 44,
+      name: "Egg Biryani",
+      description: "Spiced basmati dum biryani served with boiled eggs and cooling raita.",
+      price: 189,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 45,
+      name: "Chicken Fried Rice",
+      description: "Wok-tossed rice with tender chicken, vegetables, spring onion, and soy.",
+      price: 179,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: false
+    },
+    {
+      id: 46,
+      name: "Veg Fried Rice",
+      description: "Wok-fried rice with crisp vegetables, spring onion, and a light soy seasoning.",
+      price: 139,
+      category: "Rice & Biryani",
+      image: "https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 47,
+      name: "Pav Bhaji",
+      description: "Mumbai-style buttery vegetable bhaji served with toasted pav and fresh lime.",
+      price: 129,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 48,
+      name: "Aloo Tikki",
+      description: "Crisp spiced potato patties served with tangy tamarind and mint chutneys.",
+      price: 69,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 49,
+      name: "Paneer Tikka",
+      description: "Tandoor-charred paneer cubes marinated in yogurt, herbs, and Indian spices.",
+      price: 189,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 50,
+      name: "French Fries",
+      description: "Golden, crisp fries lightly seasoned and served with a house dip.",
+      price: 89,
+      category: "Snacks",
+      image: "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
+    },
+    {
+      id: 52,
+      name: "Mango Lassi",
+      description: "A chilled, creamy yogurt drink blended with sweet mango.",
+      price: 79,
+      category: "Drinks",
+      image: "https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=500&q=80",
+      available: true,
+      veg: true
     }
   ];
+
+  const STANDARD_FOOD_NAMES = new Map(
+    DEFAULT_FOOD_ITEMS.map(item => [item.name.toLowerCase(), item.name])
+  );
 
   // Helper: safe JSON parse
   function safeJSONParse(value, fallback) {
@@ -212,8 +659,50 @@
       const raw = localStorage.getItem(STORAGE_KEYS.FOOD_ITEMS);
       if (raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+        if (Array.isArray(parsed)) {
+          let items = parsed.filter(item => item && typeof item === "object");
+          items.forEach(item => {
+            const oldName = String(item.name || "").trim().toLowerCase();
+            const standardName = STANDARD_FOOD_NAMES.get(oldName) || FOOD_NAME_ALIASES[oldName];
+            if (standardName) item.name = standardName;
+          });
+          const uniqueNames = new Set();
+          items = items.filter(item => {
+            const name = String(item.name || "").trim().toLowerCase();
+            if (!name || !uniqueNames.has(name)) {
+              if (name) uniqueNames.add(name);
+              return true;
+            }
+            return false;
+          });
+          const usedIds = new Set();
+          let nextId = items.reduce((highest, item) => Math.max(highest, Number(item.id) || 0), 0) + 1;
+          items.forEach(item => {
+            const id = Number(item.id);
+            if (!Number.isFinite(id) || usedIds.has(id)) {
+              item.id = nextId++;
+            }
+            usedIds.add(Number(item.id));
+          });
+
+          const names = new Set(items.map(item => String(item.name || "").trim().toLowerCase()));
+          DEFAULT_FOOD_ITEMS.forEach(defaultItem => {
+            const name = defaultItem.name.trim().toLowerCase();
+            if (names.has(name)) return;
+
+            const item = { ...defaultItem };
+            if (usedIds.has(Number(item.id))) {
+              item.id = nextId++;
+            }
+            usedIds.add(Number(item.id));
+            names.add(name);
+            items.push(item);
+          });
+
+          if (JSON.stringify(items) !== raw) {
+            localStorage.setItem(STORAGE_KEYS.FOOD_ITEMS, JSON.stringify(items));
+          }
+          return items;
         }
       }
     } catch (err) {

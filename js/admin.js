@@ -1077,6 +1077,183 @@
     });
   }
 
+  // ============================================================================
+  // 7. Data Export Utilities (CSV & JSON)
+  // ============================================================================
+  function downloadBlob(content, filename, mimeType) {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 200);
+  }
+
+  function escapeCSV(text) {
+    if (text === null || text === undefined) return '""';
+    const str = String(text).replace(/"/g, '""');
+    return `"${str}"`;
+  }
+
+  function exportOrdersCSV() {
+    const orders = window.getOrders ? window.getOrders() : [];
+    if (!orders || orders.length === 0) {
+      showToast('No orders available to export.', 'error');
+      return;
+    }
+
+    const headers = [
+      'Order ID',
+      'Customer Name',
+      'Phone Number',
+      'Delivery Address',
+      'Ordered Items',
+      'Total Items',
+      'Subtotal (INR)',
+      'Delivery Fee (INR)',
+      'Tax (INR)',
+      'Total Amount (INR)',
+      'Payment Method',
+      'Payment Status',
+      'Order Status',
+      'Created At'
+    ];
+
+    const rows = orders.map(order => {
+      const itemsStr = (order.items || []).map(i => `${i.name} (x${i.quantity})`).join('; ');
+      return [
+        escapeCSV(order.orderId),
+        escapeCSV(order.customerName),
+        escapeCSV(order.customerPhone),
+        escapeCSV(order.deliveryAddress),
+        escapeCSV(itemsStr),
+        escapeCSV(order.totalItems),
+        escapeCSV(order.subtotal),
+        escapeCSV(order.deliveryFee),
+        escapeCSV(order.tax),
+        escapeCSV(order.totalAmount),
+        escapeCSV(order.paymentMethod),
+        escapeCSV(order.paymentStatus),
+        escapeCSV(order.status),
+        escapeCSV(order.createdAt)
+      ].join(',');
+    });
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadBlob(csvContent, `QuickBite_Orders_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+    showToast(`📥 Exported ${orders.length} orders to CSV successfully!`);
+  }
+
+  function exportOrdersJSON() {
+    const orders = window.getOrders ? window.getOrders() : [];
+    if (!orders || orders.length === 0) {
+      showToast('No orders available to export.', 'error');
+      return;
+    }
+    const jsonStr = JSON.stringify(orders, null, 2);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadBlob(jsonStr, `QuickBite_Orders_${dateStr}.json`, 'application/json');
+    showToast(`📋 Exported ${orders.length} orders as JSON!`);
+  }
+
+  function exportMenuCSV() {
+    const items = window.getFoodItems ? window.getFoodItems() : [];
+    if (!items || items.length === 0) {
+      showToast('No menu items available to export.', 'error');
+      return;
+    }
+
+    const headers = [
+      'Item ID',
+      'Dish Name',
+      'Category',
+      'Price (INR)',
+      'Dietary Type',
+      'Availability',
+      'Description',
+      'Image URL'
+    ];
+
+    const rows = items.map(item => [
+      escapeCSV(item.id),
+      escapeCSV(item.name),
+      escapeCSV(item.category),
+      escapeCSV(item.price),
+      escapeCSV(item.veg !== false ? 'Vegetarian' : 'Non-Vegetarian'),
+      escapeCSV(item.available !== false ? 'In Stock' : 'Out of Stock'),
+      escapeCSV(item.description),
+      escapeCSV(item.image)
+    ].join(','));
+
+    const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\r\n');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadBlob(csvContent, `QuickBite_Menu_Catalogue_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+    showToast(`📥 Exported ${items.length} menu dishes to CSV successfully!`);
+  }
+
+  function exportMenuJSON() {
+    const items = window.getFoodItems ? window.getFoodItems() : [];
+    if (!items || items.length === 0) {
+      showToast('No menu items available to export.', 'error');
+      return;
+    }
+    const jsonStr = JSON.stringify(items, null, 2);
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadBlob(jsonStr, `QuickBite_Menu_${dateStr}.json`, 'application/json');
+    showToast(`📋 Exported ${items.length} menu dishes as JSON!`);
+  }
+
+  function exportSalesReportCSV() {
+    const orders = window.getOrders ? window.getOrders() : [];
+    const foodItems = window.getFoodItems ? window.getFoodItems() : [];
+
+    const totalOrders = orders.length;
+    const completedOrders = orders.filter(o => o.status === 'Completed').length;
+    const pendingOrders = orders.filter(o => o.status === 'Pending').length;
+    const cancelledOrders = orders.filter(o => o.status === 'Cancelled').length;
+    const totalRevenue = orders
+      .filter(o => o.status !== 'Cancelled')
+      .reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
+
+    const reportLines = [
+      'QUICKBITE SOUTH INDIAN RESTAURANT - SALES & ANALYTICS REPORT',
+      `Report Generated At,${new Date().toLocaleString('en-IN')}`,
+      '',
+      'KEY PERFORMANCE METRICS',
+      `Total Food Items in Menu,${foodItems.length}`,
+      `Total Orders Recorded,${totalOrders}`,
+      `Completed Orders,${completedOrders}`,
+      `Pending Orders,${pendingOrders}`,
+      `Cancelled Orders,${cancelledOrders}`,
+      `Total Net Revenue (INR),₹${totalRevenue.toLocaleString('en-IN')}`,
+      '',
+      'ORDER SUMMARY BREAKDOWN',
+      'Order ID,Customer,Phone,Items Count,Total (INR),Payment Status,Order Status,Date'
+    ];
+
+    orders.forEach(o => {
+      reportLines.push([
+        escapeCSV(o.orderId),
+        escapeCSV(o.customerName),
+        escapeCSV(o.customerPhone),
+        escapeCSV(o.totalItems || (o.items ? o.items.length : 1)),
+        escapeCSV(o.totalAmount),
+        escapeCSV(o.paymentStatus),
+        escapeCSV(o.status),
+        escapeCSV(o.createdAt)
+      ].join(','));
+    });
+
+    const csvContent = '\uFEFF' + reportLines.join('\r\n');
+    const dateStr = new Date().toISOString().slice(0, 10);
+    downloadBlob(csvContent, `QuickBite_Sales_Report_${dateStr}.csv`, 'text/csv;charset=utf-8;');
+    showToast('📥 Restaurant Sales Report exported to CSV!');
+  }
+
   // Public API exposure for inline event handlers
   window.QuickBiteAdmin = {
     switchView,
@@ -1096,7 +1273,12 @@
     closeMobileSidebar,
     toggleKitchenStatus,
     handleDemoAdminLogin,
-    handleLogout
+    handleLogout,
+    exportOrdersCSV,
+    exportOrdersJSON,
+    exportMenuCSV,
+    exportMenuJSON,
+    exportSalesReportCSV
   };
 
   document.addEventListener('DOMContentLoaded', initDashboard);

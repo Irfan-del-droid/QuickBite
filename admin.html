@@ -118,6 +118,11 @@
         </div>
 
         <div class="topbar-right">
+          <!-- Quick Export Sales Report -->
+          <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.exportSalesReportCSV()" title="Export restaurant sales analytics to CSV">
+            <span>📥 Export Report</span>
+          </button>
+
           <!-- Kitchen Status Pill -->
           <button type="button" id="kitchen-status-pill" class="kitchen-live-pill" onclick="window.QuickBiteAdmin.toggleKitchenStatus()" title="Click to toggle kitchen status">
             <span class="kitchen-dot"></span>
@@ -322,6 +327,12 @@
 
               <!-- Action Buttons -->
               <div class="toolbar-actions">
+                <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.exportMenuCSV()" title="Export food menu as CSV spreadsheet">
+                  📥 Export CSV
+                </button>
+                <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.exportMenuJSON()" title="Export food menu as JSON backup">
+                  📋 JSON
+                </button>
                 <button type="button" class="btn-primary-yellow" onclick="window.QuickBiteAdmin.openAddFoodModal()">
                   <span style="font-size: 16px;">＋</span>
                   <span>Add Food Item</span>
@@ -422,6 +433,13 @@
                 <option value="today">Today's Orders</option>
                 <option value="week">Past 7 Days</option>
               </select>
+
+              <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.exportOrdersCSV()" title="Export orders to CSV spreadsheet">
+                📥 Export Orders (CSV)
+              </button>
+              <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.exportOrdersJSON()" title="Export orders as JSON backup">
+                📋 JSON
+              </button>
             </div>
           </div>
 

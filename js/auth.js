@@ -229,6 +229,7 @@ function initRegisterModule() {
 function initLoginModule() {
   const loginForm = document.getElementById('login-form');
   const fillDemoBtn = document.getElementById('btn-fill-demo');
+  const fillAdminBtn = document.getElementById('btn-fill-admin');
 
   const emailInput = document.getElementById('login-email');
   const passwordInput = document.getElementById('login-password');
@@ -239,6 +240,17 @@ function initLoginModule() {
   if (emailInput) emailInput.addEventListener('input', () => clearFieldError('email-error'));
   if (passwordInput) passwordInput.addEventListener('input', () => clearFieldError('password-error'));
 
+  // Check URL redirect param
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectTarget = urlParams.get('redirect');
+  if (redirectTarget === 'admin' || redirectTarget === 'admin.html') {
+    if (emailInput && passwordInput) {
+      emailInput.value = 'admin@quickbite.com';
+      passwordInput.value = 'AdminPassword123';
+    }
+    showAlert(alertBox, '🔒 Admin Portal Access: Please sign in with Admin credentials to proceed.', 'info');
+  }
+
   // Quick demo credentials pre-fill
   if (fillDemoBtn && emailInput && passwordInput) {
     fillDemoBtn.addEventListener('click', () => {
@@ -247,7 +259,18 @@ function initLoginModule() {
       clearFieldError('email-error');
       clearFieldError('password-error');
       hideAlert(alertBox);
-      showAlert(alertBox, 'Demo credentials filled! Click "Sign In" to proceed.', 'info');
+      showAlert(alertBox, 'Customer credentials filled! Click "Sign In" to proceed.', 'info');
+    });
+  }
+
+  if (fillAdminBtn && emailInput && passwordInput) {
+    fillAdminBtn.addEventListener('click', () => {
+      emailInput.value = 'admin@quickbite.com';
+      passwordInput.value = 'AdminPassword123';
+      clearFieldError('email-error');
+      clearFieldError('password-error');
+      hideAlert(alertBox);
+      showAlert(alertBox, 'Admin credentials filled! Click "Sign In" to open Admin Portal.', 'info');
     });
   }
 
@@ -294,11 +317,14 @@ function initLoginModule() {
     // Credentials valid: Create session in qb_current_user (NO PASSWORD IN SESSION)
     StorageContract.setCurrentUser(user);
 
-    showAlert(alertBox, `Welcome back, ${user.name}! Redirecting to home...`, 'success');
+    const isAdminUser = user.role === 'admin' || user.email.toLowerCase() === 'admin@quickbite.com';
+    const destination = (isAdminUser || redirectTarget === 'admin' || redirectTarget === 'admin.html') ? 'admin.html' : 'index.html';
+
+    showAlert(alertBox, `Welcome back, ${user.name}! Redirecting...`, 'success');
 
     setTimeout(() => {
-      window.location.href = 'index.html';
-    }, 1200);
+      window.location.href = destination;
+    }, 1000);
   });
 }
 
@@ -361,6 +387,22 @@ function initGlobalAuthNavbar() {
       userBadge.className = 'user-nav-badge';
       userBadge.textContent = `👋 ${currentUser.name}`;
 
+      navContainer.appendChild(userBadge);
+
+      const isAdmin = currentUser.role === 'admin' || (currentUser.email && currentUser.email.toLowerCase() === 'admin@quickbite.com');
+      if (isAdmin) {
+        const adminBtn = document.createElement('a');
+        adminBtn.href = 'admin.html';
+        adminBtn.className = 'nav-link btn-admin-link';
+        adminBtn.style.background = 'var(--primary-gold, #FFC857)';
+        adminBtn.style.color = '#242424';
+        adminBtn.style.fontWeight = '700';
+        adminBtn.style.padding = '6px 12px';
+        adminBtn.style.borderRadius = '8px';
+        adminBtn.innerHTML = '⚙️ Admin Portal';
+        navContainer.appendChild(adminBtn);
+      }
+
       const logoutBtn = document.createElement('a');
       logoutBtn.href = '#';
       logoutBtn.className = 'nav-link btn-logout-link';
@@ -371,7 +413,6 @@ function initGlobalAuthNavbar() {
         window.location.href = 'login.html';
       });
 
-      navContainer.appendChild(userBadge);
       navContainer.appendChild(logoutBtn);
     }
   }

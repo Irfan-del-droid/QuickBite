@@ -213,9 +213,38 @@
 
     function handlePlaceOrder(e) {
       e.preventDefault();
-      const name = document.getElementById("cust-name").value;
+      const name = document.getElementById("cust-name").value.trim();
+      const phone = document.getElementById("cust-phone").value.trim();
+      const address = document.getElementById("cust-address").value.trim();
+      const paymentEl = document.querySelector('input[name="payment"]:checked');
+      const paymentVal = paymentEl ? paymentEl.value : 'cod';
       const bill = calculateCartBill();
-      alert(`🎉 Thank you, ${name}!\n\nYour QuickBite order for ${formatCurrency(bill.grandTotal)} has been placed successfully!\nYour food is being prepared.`);
+      const cart = getCart();
+
+      const orderData = {
+        customerName: name,
+        customerPhone: phone,
+        deliveryAddress: address,
+        paymentMethod: paymentVal === 'upi' ? 'UPI / GPay' : 'Cash on Delivery (COD)',
+        paymentStatus: paymentVal === 'upi' ? 'Paid' : 'Pending',
+        items: cart.map(item => ({
+          foodId: item.foodId,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image || ''
+        })),
+        totalItems: bill.totalItems,
+        subtotal: bill.subtotal,
+        deliveryFee: bill.deliveryFee,
+        tax: bill.tax,
+        totalAmount: bill.grandTotal,
+        status: 'Pending'
+      };
+
+      const newOrder = QuickBiteStorage.createOrder(orderData);
+      const orderRef = newOrder && newOrder.orderId ? `Order #${newOrder.orderId}` : 'Your QuickBite order';
+      alert(`🎉 Thank you, ${name}!\n\n${orderRef} for ${formatCurrency(bill.grandTotal)} has been placed successfully!\nYour food is being prepared.`);
       clearCart();
       window.location.href = "index.html";
     }

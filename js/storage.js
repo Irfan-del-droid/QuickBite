@@ -17,19 +17,28 @@
     CART: 'qb_cart',
     FOOD_ITEMS: 'qb_food_items',
     USERS: 'qb_users',
-    CURRENT_USER: 'qb_current_user'
+    CURRENT_USER: 'qb_current_user',
+    ORDERS: 'qb_orders'
   };
 
   // ============================================================================
   // 2. Default Seed Data
   // ============================================================================
 
-  // Default demo user account for testing
+  // Default demo user accounts (including Admin role)
   const DEFAULT_DEMO_USERS = [
+    {
+      name: 'Restaurant Admin',
+      email: 'admin@quickbite.com',
+      password: 'AdminPassword123',
+      role: 'admin',
+      createdAt: '2026-10-27T00:00:00.000Z'
+    },
     {
       name: 'Demo Gourmet',
       email: 'demo@quickbite.com',
       password: 'Password123',
+      role: 'customer',
       createdAt: '2026-10-27T00:00:00.000Z'
     }
   ];
@@ -575,12 +584,21 @@
     getUsers() {
       try {
         const raw = localStorage.getItem(STORAGE_KEYS.USERS);
-        if (!raw) {
-          localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(DEFAULT_DEMO_USERS));
-          return [...DEFAULT_DEMO_USERS];
+        let users = DEFAULT_DEMO_USERS;
+        if (raw) {
+          const parsed = safeJSONParse(raw, null);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            users = parsed;
+          }
         }
-        const parsed = safeJSONParse(raw, DEFAULT_DEMO_USERS);
-        return Array.isArray(parsed) ? parsed : DEFAULT_DEMO_USERS;
+        // Ensure admin user exists in qb_users
+        DEFAULT_DEMO_USERS.forEach(defUser => {
+          if (!users.some(u => (u.email || '').toLowerCase() === defUser.email.toLowerCase())) {
+            users.unshift(defUser);
+          }
+        });
+        localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+        return users;
       } catch (err) {
         console.error('[QuickBite Storage] Failed to get users from localStorage:', err);
         return [...DEFAULT_DEMO_USERS];
@@ -598,10 +616,12 @@
       try {
         if (!userData || !userData.email) return false;
         const users = this.getUsers();
+        const normEmail = userData.email.trim().toLowerCase();
         const record = {
           name: (userData.name || '').trim(),
-          email: userData.email.trim().toLowerCase(),
+          email: normEmail,
           password: userData.password,
+          role: userData.role || (normEmail === 'admin@quickbite.com' ? 'admin' : 'customer'),
           createdAt: userData.createdAt || new Date().toISOString()
         };
         users.push(record);
@@ -626,9 +646,11 @@
     setCurrentUser(userData) {
       try {
         if (!userData) return false;
+        const normEmail = (userData.email || '').trim().toLowerCase();
         const sessionPayload = {
           name: (userData.name || '').trim(),
-          email: (userData.email || '').trim().toLowerCase(),
+          email: normEmail,
+          role: userData.role || (normEmail === 'admin@quickbite.com' ? 'admin' : 'customer'),
           loggedInAt: new Date().toISOString()
         };
         localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(sessionPayload));
@@ -647,6 +669,12 @@
         console.error('[QuickBite Storage] Failed to clear session:', err);
         return false;
       }
+    },
+
+    isAdmin() {
+      const user = this.getCurrentUser();
+      if (!user) return false;
+      return user.role === 'admin' || (user.email && user.email.toLowerCase() === 'admin@quickbite.com');
     }
   };
 
@@ -656,65 +684,97 @@
 
   function getFoodItems() {
     try {
+      const initialized = localStorage.getItem('qb_food_initialized');
       const raw = localStorage.getItem(STORAGE_KEYS.FOOD_ITEMS);
-      if (raw) {
+
+      if (initialized && raw) {
         const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          let items = parsed.filter(item => item && typeof item === "object");
-          items.forEach(item => {
-            const oldName = String(item.name || "").trim().toLowerCase();
-            const standardName = STANDARD_FOOD_NAMES.get(oldName) || FOOD_NAME_ALIASES[oldName];
-            if (standardName) item.name = standardName;
-          });
-          const uniqueNames = new Set();
-          items = items.filter(item => {
-            const name = String(item.name || "").trim().toLowerCase();
-            if (!name || !uniqueNames.has(name)) {
-              if (name) uniqueNames.add(name);
-              return true;
-            }
-            return false;
-          });
-          const usedIds = new Set();
-          let nextId = items.reduce((highest, item) => Math.max(highest, Number(item.id) || 0), 0) + 1;
-          items.forEach(item => {
-            const id = Number(item.id);
-            if (!Number.isFinite(id) || usedIds.has(id)) {
-              item.id = nextId++;
-            }
-            usedIds.add(Number(item.id));
-          });
-
-          const names = new Set(items.map(item => String(item.name || "").trim().toLowerCase()));
-          DEFAULT_FOOD_ITEMS.forEach(defaultItem => {
-            const name = defaultItem.name.trim().toLowerCase();
-            if (names.has(name)) return;
-
-            const item = { ...defaultItem };
-            if (usedIds.has(Number(item.id))) {
-              item.id = nextId++;
-            }
-            usedIds.add(Number(item.id));
-            names.add(name);
-            items.push(item);
-          });
-
-          if (JSON.stringify(items) !== raw) {
-            localStorage.setItem(STORAGE_KEYS.FOOD_ITEMS, JSON.stringify(items));
-          }
-          return items;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed;
         }
       }
+
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          localStorage.setItem('qb_food_initialized', 'true');
+          return parsed;
+        }
+      }
+
+      localStorage.setItem(STORAGE_KEYS.FOOD_ITEMS, JSON.stringify(DEFAULT_FOOD_ITEMS));
+      localStorage.setItem('qb_food_initialized', 'true');
+      return [...DEFAULT_FOOD_ITEMS];
     } catch (err) {
       console.error("[QuickBite Storage] Error reading food items:", err);
+      return [...DEFAULT_FOOD_ITEMS];
     }
+  }
 
+  function saveFoodItems(items) {
     try {
-      localStorage.setItem(STORAGE_KEYS.FOOD_ITEMS, JSON.stringify(DEFAULT_FOOD_ITEMS));
+      const validItems = Array.isArray(items) ? items : [];
+      localStorage.setItem(STORAGE_KEYS.FOOD_ITEMS, JSON.stringify(validItems));
+      localStorage.setItem('qb_food_initialized', 'true');
+      window.dispatchEvent(new CustomEvent('qb-food-items-updated', { detail: validItems }));
+      return true;
     } catch (err) {
-      console.error("[QuickBite Storage] Error storing default food items:", err);
+      console.error("[QuickBite Storage] Error saving food items:", err);
+      return false;
     }
-    return DEFAULT_FOOD_ITEMS;
+  }
+
+  function addFoodItem(itemData) {
+    if (!itemData || !itemData.name) return null;
+    const items = getFoodItems();
+    const highestId = items.reduce((highest, item) => Math.max(highest, Number(item.id) || 0), 0);
+    const newItem = {
+      id: highestId + 1,
+      name: String(itemData.name).trim(),
+      description: String(itemData.description || '').trim(),
+      category: itemData.category || 'South Indian',
+      price: Number(itemData.price) || 0,
+      image: itemData.image && itemData.image.trim() ? itemData.image.trim() : 'quickbite_golden_feast/images/masala-dosa.webp',
+      available: itemData.available !== false,
+      veg: itemData.veg !== false
+    };
+    items.unshift(newItem);
+    saveFoodItems(items);
+    return newItem;
+  }
+
+  function updateFoodItem(id, itemData) {
+    if (id === undefined || id === null) return null;
+    const items = getFoodItems();
+    const index = items.findIndex(item => Number(item.id) === Number(id));
+    if (index === -1) return null;
+
+    const current = items[index];
+    items[index] = {
+      ...current,
+      name: itemData.name !== undefined ? String(itemData.name).trim() : current.name,
+      description: itemData.description !== undefined ? String(itemData.description).trim() : current.description,
+      category: itemData.category !== undefined ? itemData.category : current.category,
+      price: itemData.price !== undefined ? Number(itemData.price) : current.price,
+      image: itemData.image !== undefined ? (itemData.image.trim() || current.image) : current.image,
+      available: itemData.available !== undefined ? Boolean(itemData.available) : current.available,
+      veg: itemData.veg !== undefined ? Boolean(itemData.veg) : current.veg
+    };
+    saveFoodItems(items);
+    return items[index];
+  }
+
+  function deleteFoodItem(id) {
+    if (id === undefined || id === null) return false;
+    const items = getFoodItems();
+    const filtered = items.filter(item => Number(item.id) !== Number(id));
+    saveFoodItems(filtered);
+    return true;
+  }
+
+  function getFoodItemById(id) {
+    const items = getFoodItems();
+    return items.find(item => Number(item.id) === Number(id)) || null;
   }
 
   function isValidCartItem(item) {
@@ -862,9 +922,274 @@
   }
 
   // ============================================================================
-  // 5. Global API Exposure
+  // 5. Orders Management Storage (Admin & Checkout Integration)
   // ============================================================================
-  // Attach cart methods to QuickBiteStorage object for compatibility
+
+  // Default Sample Orders for immediate Admin Portal demonstration & testing
+  const DEFAULT_SAMPLE_ORDERS = [
+    {
+      orderId: 'QB-1048',
+      customerName: 'Senthil Kumar',
+      customerPhone: '9840123456',
+      deliveryAddress: 'Flat 4B, Kaveri Apartments, 2nd Main Road, Anna Nagar, Chennai',
+      items: [
+        { foodId: 1, name: 'Masala Dosa', price: 89, quantity: 2, image: 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 31, name: 'Filter Coffee', price: 49, quantity: 2, image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 33, name: 'Ghee Pongal', price: 89, quantity: 1, image: 'quickbite_golden_feast/images/ven-pongal.jpg' }
+      ],
+      totalItems: 5,
+      subtotal: 365,
+      deliveryFee: 40,
+      tax: 18,
+      totalAmount: 423,
+      paymentMethod: 'UPI / GPay',
+      paymentStatus: 'Paid',
+      status: 'Preparing',
+      createdAt: new Date(Date.now() - 25 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1047',
+      customerName: 'Priya Raman',
+      customerPhone: '9884567890',
+      deliveryAddress: 'Plot 12, Sri Ram Nagar, Thiruvanmiyur, Chennai',
+      items: [
+        { foodId: 2, name: 'Idli', price: 69, quantity: 3, image: 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 5, name: 'Medu Vada', price: 59, quantity: 2, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 31, name: 'Filter Coffee', price: 49, quantity: 2, image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 7,
+      subtotal: 423,
+      deliveryFee: 40,
+      tax: 21,
+      totalAmount: 484,
+      paymentMethod: 'UPI / GPay',
+      paymentStatus: 'Paid',
+      status: 'Ready for Pickup',
+      createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1046',
+      customerName: 'Karthik Sundaram',
+      customerPhone: '9444112233',
+      deliveryAddress: 'Door 18, Temple View Street, Mylapore, Chennai',
+      items: [
+        { foodId: 6, name: 'Paneer Butter Masala', price: 219, quantity: 1, image: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 39, name: 'Butter Naan', price: 49, quantity: 3, image: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 13, name: 'Veg Biryani', price: 199, quantity: 1, image: 'https://images.unsplash.com/photo-1645177628172-a4fa81dac3c7?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 5,
+      subtotal: 565,
+      deliveryFee: 0,
+      tax: 28,
+      totalAmount: 593,
+      paymentMethod: 'Cash on Delivery (COD)',
+      paymentStatus: 'Pending',
+      status: 'Pending',
+      createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1045',
+      customerName: 'Ananya Iyer',
+      customerPhone: '9791002345',
+      deliveryAddress: 'Tower 3, Apt 804, Green Acres, Perungudi, Chennai',
+      items: [
+        { foodId: 4, name: 'Onion Uttapam', price: 79, quantity: 2, image: 'https://images.unsplash.com/photo-1630383249896-483b843b4c1d?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 52, name: 'Mango Lassi', price: 79, quantity: 2, image: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 4,
+      subtotal: 316,
+      deliveryFee: 40,
+      tax: 16,
+      totalAmount: 372,
+      paymentMethod: 'UPI / GPay',
+      paymentStatus: 'Paid',
+      status: 'Confirmed',
+      createdAt: new Date(Date.now() - 65 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1044',
+      customerName: 'Rajesh V.',
+      customerPhone: '9940334455',
+      deliveryAddress: '24, Gandhi Road, T. Nagar, Chennai',
+      items: [
+        { foodId: 3, name: 'Chettinad Chicken Curry', price: 229, quantity: 1, image: 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 11, name: 'Chicken Biryani', price: 269, quantity: 2, image: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 29, name: 'Sweet Lassi', price: 59, quantity: 2, image: 'https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 5,
+      subtotal: 885,
+      deliveryFee: 0,
+      tax: 44,
+      totalAmount: 929,
+      paymentMethod: 'UPI / GPay',
+      paymentStatus: 'Paid',
+      status: 'Completed',
+      createdAt: new Date(Date.now() - 14 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1043',
+      customerName: 'Meenakshi Sundaram',
+      customerPhone: '9841998877',
+      deliveryAddress: '55, South Mada Street, Mylapore, Chennai',
+      items: [
+        { foodId: 5, name: 'Medu Vada', price: 59, quantity: 4, image: 'https://images.unsplash.com/photo-1606491956689-2ea866880c84?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 31, name: 'Filter Coffee', price: 49, quantity: 4, image: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 8,
+      subtotal: 432,
+      deliveryFee: 40,
+      tax: 22,
+      totalAmount: 494,
+      paymentMethod: 'UPI / GPay',
+      paymentStatus: 'Paid',
+      status: 'Completed',
+      createdAt: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1042',
+      customerName: 'Deepak Sharma',
+      customerPhone: '9820556677',
+      deliveryAddress: '15, Sterling Road, Nungambakkam, Chennai',
+      items: [
+        { foodId: 9, name: 'Chole Bhature', price: 129, quantity: 2, image: 'https://images.unsplash.com/photo-1626132647523-66c2e3b57b00?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 28, name: 'Masala Chai', price: 39, quantity: 2, image: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 4,
+      subtotal: 336,
+      deliveryFee: 40,
+      tax: 17,
+      totalAmount: 393,
+      paymentMethod: 'Cash on Delivery (COD)',
+      paymentStatus: 'Paid',
+      status: 'Completed',
+      createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString()
+    },
+    {
+      orderId: 'QB-1041',
+      customerName: 'Vikram Nathan',
+      customerPhone: '9711223344',
+      deliveryAddress: '31, Beach Road, Besant Nagar, Chennai',
+      items: [
+        { foodId: 19, name: 'Chicken 65', price: 159, quantity: 2, image: 'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=500&q=80' },
+        { foodId: 14, name: 'Egg Fried Rice', price: 139, quantity: 1, image: 'https://images.unsplash.com/photo-1603133872878-684f208fb84b?auto=format&fit=crop&w=500&q=80' }
+      ],
+      totalItems: 3,
+      subtotal: 457,
+      deliveryFee: 40,
+      tax: 23,
+      totalAmount: 520,
+      paymentMethod: 'Cash on Delivery (COD)',
+      paymentStatus: 'Cancelled',
+      status: 'Cancelled',
+      createdAt: new Date(Date.now() - 72 * 60 * 60 * 1000).toISOString()
+    }
+  ];
+
+  function getOrders() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEYS.ORDERS);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (err) {
+      console.error("[QuickBite Storage] Error reading orders:", err);
+    }
+    try {
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(DEFAULT_SAMPLE_ORDERS));
+    } catch (err) {
+      console.error("[QuickBite Storage] Error storing default orders:", err);
+    }
+    return [...DEFAULT_SAMPLE_ORDERS];
+  }
+
+  function saveOrders(orders) {
+    try {
+      const list = Array.isArray(orders) ? orders : [];
+      localStorage.setItem(STORAGE_KEYS.ORDERS, JSON.stringify(list));
+      window.dispatchEvent(new CustomEvent('qb-orders-updated', { detail: list }));
+      return true;
+    } catch (err) {
+      console.error("[QuickBite Storage] Error saving orders:", err);
+      return false;
+    }
+  }
+
+  function createOrder(orderData) {
+    if (!orderData) return null;
+    const orders = getOrders();
+    const nextNum = orders.reduce((max, o) => {
+      const num = parseInt(String(o.orderId || '').replace(/\D/g, ''), 10);
+      return Math.max(max, isNaN(num) ? 0 : num);
+    }, 1048) + 1;
+
+    const newOrder = {
+      orderId: orderData.orderId || `QB-${nextNum}`,
+      customerName: (orderData.customerName || 'Guest Customer').trim(),
+      customerPhone: (orderData.customerPhone || '').trim(),
+      deliveryAddress: (orderData.deliveryAddress || '').trim(),
+      items: Array.isArray(orderData.items) ? orderData.items : [],
+      totalItems: Number(orderData.totalItems) || (orderData.items ? orderData.items.reduce((s, i) => s + (i.quantity || 1), 0) : 0),
+      subtotal: Number(orderData.subtotal) || 0,
+      deliveryFee: Number(orderData.deliveryFee) || 0,
+      tax: Number(orderData.tax) || 0,
+      totalAmount: Number(orderData.totalAmount) || 0,
+      paymentMethod: orderData.paymentMethod || 'Cash on Delivery (COD)',
+      paymentStatus: orderData.paymentStatus || 'Pending',
+      status: orderData.status || 'Pending',
+      createdAt: orderData.createdAt || new Date().toISOString()
+    };
+
+    orders.unshift(newOrder);
+    saveOrders(orders);
+    return newOrder;
+  }
+
+  function updateOrderStatus(orderId, newStatus) {
+    const validStatuses = ['Pending', 'Confirmed', 'Preparing', 'Ready for Pickup', 'Completed', 'Cancelled'];
+    if (!validStatuses.includes(newStatus)) return null;
+
+    const orders = getOrders();
+    const order = orders.find(o => String(o.orderId) === String(orderId));
+    if (!order) return null;
+
+    order.status = newStatus;
+    order.updatedAt = new Date().toISOString();
+
+    if (newStatus === 'Completed' && order.paymentStatus === 'Pending') {
+      order.paymentStatus = 'Paid';
+    } else if (newStatus === 'Cancelled') {
+      order.paymentStatus = (order.paymentMethod && order.paymentMethod.includes('UPI')) ? 'Refunded' : 'Cancelled';
+    }
+
+    saveOrders(orders);
+    return order;
+  }
+
+  function deleteOrder(orderId) {
+    const orders = getOrders();
+    const filtered = orders.filter(o => String(o.orderId) !== String(orderId));
+    saveOrders(filtered);
+    return true;
+  }
+
+  function getOrderById(orderId) {
+    const orders = getOrders();
+    return orders.find(o => String(o.orderId) === String(orderId)) || null;
+  }
+
+  // ============================================================================
+  // 6. Global API Exposure
+  // ============================================================================
+  // Attach food item methods
+  QuickBiteStorage.getFoodItems = getFoodItems;
+  QuickBiteStorage.saveFoodItems = saveFoodItems;
+  QuickBiteStorage.addFoodItem = addFoodItem;
+  QuickBiteStorage.updateFoodItem = updateFoodItem;
+  QuickBiteStorage.deleteFoodItem = deleteFoodItem;
+  QuickBiteStorage.getFoodItemById = getFoodItemById;
+
+  // Attach cart methods
   QuickBiteStorage.getCart = getCart;
   QuickBiteStorage.saveCart = saveCart;
   QuickBiteStorage.addToCart = addToCart;
@@ -875,12 +1200,25 @@
   QuickBiteStorage.calculateCartBill = calculateCartBill;
   QuickBiteStorage.formatCurrency = formatCurrency;
   QuickBiteStorage.updateCartBadge = updateCartBadge;
-  QuickBiteStorage.getFoodItems = getFoodItems;
+
+  // Attach order methods
+  QuickBiteStorage.getOrders = getOrders;
+  QuickBiteStorage.saveOrders = saveOrders;
+  QuickBiteStorage.createOrder = createOrder;
+  QuickBiteStorage.updateOrderStatus = updateOrderStatus;
+  QuickBiteStorage.deleteOrder = deleteOrder;
+  QuickBiteStorage.getOrderById = getOrderById;
 
   window.QuickBiteStorage = QuickBiteStorage;
 
-  // Also expose top-level cart functions for backward compatibility with cart.html / menu.html
+  // Top-level aliases for backward compatibility across all modules
   window.getFoodItems = getFoodItems;
+  window.saveFoodItems = saveFoodItems;
+  window.addFoodItem = addFoodItem;
+  window.updateFoodItem = updateFoodItem;
+  window.deleteFoodItem = deleteFoodItem;
+  window.getFoodItemById = getFoodItemById;
+
   window.getCart = getCart;
   window.saveCart = saveCart;
   window.addToCart = addToCart;
@@ -892,10 +1230,18 @@
   window.formatCurrency = formatCurrency;
   window.updateCartBadge = updateCartBadge;
 
+  window.getOrders = getOrders;
+  window.saveOrders = saveOrders;
+  window.createOrder = createOrder;
+  window.updateOrderStatus = updateOrderStatus;
+  window.deleteOrder = deleteOrder;
+  window.getOrderById = getOrderById;
+
   // Auto-init on page load
   document.addEventListener("DOMContentLoaded", () => {
     QuickBiteStorage.getUsers();
     getFoodItems();
+    getOrders();
     updateCartBadge();
   });
 })();

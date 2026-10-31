@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal — QuickBite South Indian Restaurant</title>
+  
+  <!-- Google Fonts: Poppins & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Admin Stylesheet -->
+  <link rel="stylesheet" href="css/admin.css">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍛</text></svg>">
+</head>
+<body>
+
+  <!-- Mobile Sidebar Backdrop Overlay -->
+  <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="window.QuickBiteAdmin.closeMobileSidebar()"></div>
+
+  <!-- Admin App Shell -->
+  <div class="admin-shell">
+
+    <!-- ========================================================================
+         1. Sidebar Navigation
+         ======================================================================== -->
+    <aside id="admin-sidebar" class="admin-sidebar" aria-label="Admin Navigation Sidebar">
+      <!-- Sidebar Brand Header -->
+      <div class="sidebar-brand">
+        <div class="sidebar-brand-mark" aria-hidden="true">🍛</div>
+        <div class="sidebar-brand-text">
+          <h1>Quick<span>Bite</span></h1>
+          <p>South Indian Kitchen</p>
+        </div>
+      </div>
+
+      <div class="sidebar-role-badge">
+        <span>Admin Management Portal</span>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">Main Navigation</div>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="#dashboard" class="sidebar-nav-link active" data-view="dashboard">
+              <span class="nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#menu" class="sidebar-nav-link" data-view="menu">
+              <span class="nav-icon">🍽️</span>
+              <span>Menu Management</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#orders" class="sidebar-nav-link" data-view="orders">
+              <span class="nav-icon">📦</span>
+              <span>Order Management</span>
+              <span id="badge-orders-pending" class="badge-counter" style="display: none;">0</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="nav-section-title" style="margin-top: 18px;">Customer Site</div>
+        <ul class="sidebar-nav-list">
+          <li class="sidebar-nav-item">
+            <a href="index.html" class="sidebar-nav-link" target="_blank" rel="noopener">
+              <span class="nav-icon">🌐</span>
+              <span>View Live Website</span>
+              <span style="margin-left: auto; font-size: 11px;">↗</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="menu.html" class="sidebar-nav-link" target="_blank" rel="noopener">
+              <span class="nav-icon">📋</span>
+              <span>Customer Menu</span>
+              <span style="margin-left: auto; font-size: 11px;">↗</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer / Admin Session Profile -->
+      <div class="sidebar-footer">
+        <div class="admin-profile-card">
+          <div class="admin-avatar">A</div>
+          <div class="admin-info">
+            <strong id="sidebar-admin-name">Restaurant Admin</strong>
+            <small id="sidebar-admin-email">admin@quickbite.com</small>
+          </div>
+          <button type="button" class="btn-sidebar-logout" onclick="window.QuickBiteAdmin.handleLogout()" title="Log Out of Admin Portal" aria-label="Log Out">
+            🚪
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========================================================================
+         2. Main Administration Area
+         ======================================================================== -->
+    <main class="admin-main">
+
+      <!-- Top Header Navigation -->
+      <header class="admin-topbar">
+        <div class="topbar-left">
+          <button type="button" class="btn-mobile-toggle" onclick="window.QuickBiteAdmin.toggleMobileSidebar()" aria-label="Toggle navigation drawer">
+            ☰
+          </button>
+          <div class="page-breadcrumb">
+            <h2 id="topbar-breadcrumb-title">Dashboard Overview</h2>
+            <p id="topbar-breadcrumb-sub">South Indian Restaurant Performance & Analytics</p>
+          </div>
+        </div>
+
+        <div class="topbar-right">
+          <!-- Kitchen Status Pill -->
+          <button type="button" id="kitchen-status-pill" class="kitchen-live-pill" onclick="window.QuickBiteAdmin.toggleKitchenStatus()" title="Click to toggle kitchen status">
+            <span class="kitchen-dot"></span>
+            <span>Kitchen Open</span>
+          </button>
+
+          <!-- Digital Live Clock -->
+          <div class="live-clock" title="Current Restaurant Time">
+            <span>🕒</span>
+            <span id="topbar-live-clock">--:--:--</span>
+          </div>
+
+          <!-- Customer Website Quick Link -->
+          <a href="index.html" class="btn-topbar-action" target="_blank" rel="noopener">
+            <span>Browse Restaurant</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </header>
+
+      <!-- Dynamic Views Container -->
+      <div class="admin-content-area">
+
+        <!-- ====================================================================
+             VIEW 1: Dashboard
+             ==================================================================== -->
+        <section id="view-dashboard" class="admin-view active-view" aria-label="Dashboard Overview">
+
+          <!-- 6 Key Statistics Cards -->
+          <div class="dashboard-summary-grid">
+            <!-- 1. Total Food Items -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Total Food Items</span>
+                <div class="stat-icon-wrap stat-icon-yellow">🍽️</div>
+              </div>
+              <div class="stat-value" id="stat-total-food">0</div>
+              <div class="stat-subtext">Across 6 culinary categories</div>
+            </div>
+
+            <!-- 2. Available Food Items -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Available Items</span>
+                <div class="stat-icon-wrap stat-icon-green">✅</div>
+              </div>
+              <div class="stat-value" id="stat-avail-food">0</div>
+              <div class="stat-subtext">Active on customer menu</div>
+            </div>
+
+            <!-- 3. Total Orders -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Total Orders</span>
+                <div class="stat-icon-wrap stat-icon-blue">📦</div>
+              </div>
+              <div class="stat-value" id="stat-total-orders">0</div>
+              <div class="stat-subtext">Lifetime orders recorded</div>
+            </div>
+
+            <!-- 4. Pending Orders -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Pending Orders</span>
+                <div class="stat-icon-wrap stat-icon-amber">⏳</div>
+              </div>
+              <div class="stat-value" id="stat-pending-orders" style="color: #B78103;">0</div>
+              <div class="stat-subtext">Awaiting kitchen confirmation</div>
+            </div>
+
+            <!-- 5. Completed Orders -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Completed Orders</span>
+                <div class="stat-icon-wrap stat-icon-purple">🎉</div>
+              </div>
+              <div class="stat-value" id="stat-completed-orders">0</div>
+              <div class="stat-subtext">Fulfilled &amp; delivered</div>
+            </div>
+
+            <!-- 6. Total Revenue -->
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Total Revenue</span>
+                <div class="stat-icon-wrap stat-icon-gold">₹</div>
+              </div>
+              <div class="stat-value" id="stat-total-revenue" style="color: var(--gold-dark);">₹0</div>
+              <div class="stat-subtext">
+                <span class="stat-trend-up">↑ 12.8%</span> vs last week
+              </div>
+            </div>
+          </div>
+
+          <!-- Mid Section: Sales Analytics Chart & Order Status Overview -->
+          <div class="dashboard-analytics-grid">
+            <!-- Left: Sales Revenue Chart -->
+            <div class="analytics-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-heading">Sales Summary &amp; Revenue Curve</h3>
+                  <p class="card-subtitle">Daily earnings over the past 7 days (₹ INR)</p>
+                </div>
+                <div class="pill-select-group">
+                  <span class="pill-tab active">Past 7 Days</span>
+                </div>
+              </div>
+
+              <!-- SVG Sales Chart -->
+              <div id="dashboard-sales-chart" class="chart-container">
+                <!-- Dynamically populated SVG curve by js/admin.js -->
+              </div>
+            </div>
+
+            <!-- Right: Order Status Overview -->
+            <div class="analytics-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-heading">Order Status Overview</h3>
+                  <p class="card-subtitle">Distribution across active workflows</p>
+                </div>
+              </div>
+
+              <!-- Status Distribution Progress Bars -->
+              <div id="status-progress-container" class="status-progress-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Lower Section: Recent Orders & Popular Dishes -->
+          <div class="dashboard-lower-grid">
+            <!-- Left: Recent Orders Table -->
+            <div class="analytics-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-heading">Recent Orders</h3>
+                  <p class="card-subtitle">Latest order requests placed by customers</p>
+                </div>
+                <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.switchView('orders')">
+                  View All Orders →
+                </button>
+              </div>
+
+              <div class="table-responsive">
+                <table class="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Items</th>
+                      <th>Amount</th>
+                      <th>Status</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recent-orders-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Right: Popular Food Items -->
+            <div class="analytics-card">
+              <div class="card-header-row">
+                <div>
+                  <h3 class="card-heading">Popular Right Now</h3>
+                  <p class="card-subtitle">Most frequently ordered South Indian dishes</p>
+                </div>
+                <button type="button" class="btn-topbar-action" onclick="window.QuickBiteAdmin.switchView('menu')">
+                  Manage Menu →
+                </button>
+              </div>
+
+              <div id="popular-dishes-container" class="popular-dish-list">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- ====================================================================
+             VIEW 2: Menu Management (CRUD)
+             ==================================================================== -->
+        <section id="view-menu" class="admin-view" aria-label="Menu Management">
+
+          <!-- Top Toolbar with Search, Category Pills, Filters & Add Button -->
+          <div class="menu-mgmt-toolbar">
+            <div class="toolbar-top-row">
+              <!-- Search Bar -->
+              <div class="search-box-wrap">
+                <span class="search-icon" aria-hidden="true">🔍</span>
+                <input
+                  type="search"
+                  id="menu-search-input"
+                  class="search-input"
+                  placeholder="Search dishes by name or description..."
+                  autocomplete="off"
+                >
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="toolbar-actions">
+                <button type="button" class="btn-primary-yellow" onclick="window.QuickBiteAdmin.openAddFoodModal()">
+                  <span style="font-size: 16px;">＋</span>
+                  <span>Add Food Item</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Category Filter Pills Bar -->
+            <div class="category-filter-bar">
+              <button type="button" class="category-filter-pill active" data-category="all">All Categories</button>
+              <button type="button" class="category-filter-pill" data-category="South Indian">South Indian</button>
+              <button type="button" class="category-filter-pill" data-category="North Indian">North Indian</button>
+              <button type="button" class="category-filter-pill" data-category="Rice & Biryani">Rice &amp; Biryani</button>
+              <button type="button" class="category-filter-pill" data-category="Snacks">Snacks</button>
+              <button type="button" class="category-filter-pill" data-category="Desserts">Desserts</button>
+              <button type="button" class="category-filter-pill" data-category="Drinks">Drinks</button>
+            </div>
+
+            <!-- Secondary Filters & Item Count -->
+            <div class="filter-secondary-row">
+              <div class="quick-filter-toggles">
+                <label class="filter-toggle-label">
+                  <input type="checkbox" id="filter-veg-only">
+                  <span>Vegetarian Only</span>
+                </label>
+                <label class="filter-toggle-label">
+                  <input type="checkbox" id="filter-available-only">
+                  <span>Available in Stock Only</span>
+                </label>
+              </div>
+
+              <div id="menu-count-display" style="font-weight: 600;">
+                Showing dishes...
+              </div>
+            </div>
+          </div>
+
+          <!-- Food Items Cards Grid -->
+          <div id="menu-items-grid" class="menu-cards-grid">
+            <!-- Dynamically populated by js/admin.js -->
+          </div>
+
+        </section>
+
+        <!-- ====================================================================
+             VIEW 3: Order Management
+             ==================================================================== -->
+        <section id="view-orders" class="admin-view" aria-label="Order Management">
+
+          <!-- Workflow Status Tabs -->
+          <div class="order-tabs-container">
+            <button type="button" class="order-tab-btn active" data-status="all">
+              <span>All Orders</span>
+              <span id="tab-count-all" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Pending">
+              <span>Pending</span>
+              <span id="tab-count-pending" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Confirmed">
+              <span>Confirmed</span>
+              <span id="tab-count-confirmed" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Preparing">
+              <span>Preparing</span>
+              <span id="tab-count-preparing" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Ready for Pickup">
+              <span>Ready for Pickup</span>
+              <span id="tab-count-ready-for-pickup" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Completed">
+              <span>Completed</span>
+              <span id="tab-count-completed" class="tab-count">0</span>
+            </button>
+            <button type="button" class="order-tab-btn" data-status="Cancelled">
+              <span>Cancelled</span>
+              <span id="tab-count-cancelled" class="tab-count">0</span>
+            </button>
+          </div>
+
+          <!-- Order Filter Toolbar -->
+          <div class="order-filter-toolbar">
+            <div class="search-box-wrap">
+              <span class="search-icon" aria-hidden="true">🔍</span>
+              <input
+                type="search"
+                id="order-search-input"
+                class="search-input"
+                placeholder="Search by Order ID (#QB-1048), Customer, Phone, or Dish..."
+                autocomplete="off"
+              >
+            </div>
+
+            <div class="order-filter-controls">
+              <select id="order-date-filter" class="filter-select" aria-label="Filter orders by date">
+                <option value="all">All Dates</option>
+                <option value="today">Today's Orders</option>
+                <option value="week">Past 7 Days</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dedicated Orders Table -->
+          <div class="table-card">
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Order ID</th>
+                    <th>Customer Name &amp; Phone</th>
+                    <th>Ordered Food Items</th>
+                    <th>Qty</th>
+                    <th>Total (₹)</th>
+                    <th>Date &amp; Time</th>
+                    <th>Payment</th>
+                    <th>Order Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="orders-table-tbody">
+                  <!-- Dynamically populated by js/admin.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </section>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 1: Add / Edit Food Item Modal
+       ========================================================================== -->
+  <div id="food-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="food-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="food-modal-title">Add New Food Item</h3>
+        <button type="button" class="btn-modal-close" onclick="window.QuickBiteAdmin.closeFoodModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <form id="food-form">
+        <div class="modal-body">
+          <!-- Food Name -->
+          <div class="form-group">
+            <label for="food-input-name" class="form-label">Food Dish Name <span>*</span></label>
+            <input type="text" id="food-input-name" class="form-input" placeholder="e.g. Masala Dosa, Ghee Pongal" required>
+          </div>
+
+          <!-- Category and Price (2-Column) -->
+          <div class="form-row-2">
+            <div class="form-group">
+              <label for="food-input-category" class="form-label">Category <span>*</span></label>
+              <select id="food-input-category" class="form-select" required>
+                <option value="South Indian">South Indian</option>
+                <option value="North Indian">North Indian</option>
+                <option value="Rice & Biryani">Rice &amp; Biryani</option>
+                <option value="Snacks">Snacks</option>
+                <option value="Desserts">Desserts</option>
+                <option value="Drinks">Drinks</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="food-input-price" class="form-label">Price (₹) <span>*</span></label>
+              <input type="number" id="food-input-price" class="form-input" placeholder="e.g. 89" min="0" step="1" required>
+            </div>
+          </div>
+
+          <!-- Dietary Type (Veg / Non-Veg) -->
+          <div class="form-group">
+            <label class="form-label">Dietary Type <span>*</span></label>
+            <div class="diet-radio-group">
+              <label class="radio-pill-label">
+                <input type="radio" name="food_diet" id="food-diet-veg" value="veg" checked>
+                <span class="food-diet-dot veg"></span>
+                <span>Vegetarian</span>
+              </label>
+              <label class="radio-pill-label">
+                <input type="radio" name="food_diet" id="food-diet-nonveg" value="non-veg">
+                <span class="food-diet-dot non-veg"></span>
+                <span>Non-Vegetarian</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Image URL with Live Preview & Preset Selector -->
+          <div class="form-group">
+            <label for="food-input-image" class="form-label">Food Image URL</label>
+            <input type="url" id="food-input-image" class="form-input" placeholder="https://... or choose preset below">
+            
+            <div style="margin-top: 6px;">
+              <span style="font-size: 11px; font-weight: 600; color: var(--text-muted);">Quick preset sample food images:</span>
+              <div id="preset-images-container" class="preset-images-group">
+                <!-- Buttons injected dynamically -->
+              </div>
+            </div>
+
+            <div id="food-image-preview" class="image-preview-box">
+              <span style="font-size: 11px; color: var(--text-muted);">Image preview will appear here</span>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-group">
+            <label for="food-input-desc" class="form-label">Description</label>
+            <textarea id="food-input-desc" class="form-textarea" rows="2" placeholder="Brief appetizing description of ingredients and spices..."></textarea>
+          </div>
+
+          <!-- Initial Availability Checkbox -->
+          <div class="form-group">
+            <label class="radio-pill-label">
+              <input type="checkbox" id="food-input-available" checked>
+              <span><strong>Mark as Available</strong> (Immediately orderable on customer menu)</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-card-action" style="width: auto; padding: 0 16px; height: 38px;" onclick="window.QuickBiteAdmin.closeFoodModal()">
+            Cancel
+          </button>
+          <button type="submit" class="btn-primary-yellow">
+            Save Food Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: Delete Food Item Confirmation Modal
+       ========================================================================== -->
+  <div id="delete-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title">
+    <div class="modal-dialog" style="max-width: 440px;">
+      <div class="modal-header">
+        <h3 id="delete-modal-title" style="color: #C62828;">Delete Food Item</h3>
+        <button type="button" class="btn-modal-close" onclick="window.QuickBiteAdmin.closeDeleteModal()" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body" style="text-align: center; padding: 28px 24px;">
+        <div style="font-size: 48px; margin-bottom: 12px;">⚠️</div>
+        <h4 style="font-size: 16px; font-weight: 700; margin-bottom: 8px;">Are you sure?</h4>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6;">
+          You are about to permanently delete <strong id="delete-food-name-target" style="color: var(--text-charcoal);">this dish</strong> from the restaurant database. This change will immediately remove it from the customer-facing menu.
+        </p>
+      </div>
+      <div class="modal-footer" style="justify-content: center; gap: 12px;">
+        <button type="button" class="btn-card-action" style="width: auto; padding: 0 18px; height: 38px;" onclick="window.QuickBiteAdmin.closeDeleteModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn-primary-yellow" style="background: #C62828; color: #FFF; box-shadow: none;" onclick="window.QuickBiteAdmin.confirmDeleteFood()">
+          Yes, Delete Dish
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: Complete Order Details Receipt Modal
+       ========================================================================== -->
+  <div id="order-details-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-order-id-title">
+    <div class="modal-dialog" style="max-width: 620px;">
+      <div class="modal-header">
+        <div>
+          <span style="font-size: 11px; font-weight: 700; color: var(--gold-dark); text-transform: uppercase;">QuickBite Kitchen Order Invoice</span>
+          <h3 id="modal-order-id-title">#QB-0000</h3>
+        </div>
+        <button type="button" class="btn-modal-close" onclick="window.QuickBiteAdmin.closeOrderDetailsModal()" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Customer & Delivery Meta Grid -->
+        <div class="order-details-card">
+          <div class="order-receipt-grid">
+            <div class="receipt-meta-block">
+              <strong>Customer Name:</strong>
+              <span id="modal-order-cust-name">—</span>
+            </div>
+            <div class="receipt-meta-block">
+              <strong>Phone Number:</strong>
+              <span id="modal-order-cust-phone">—</span>
+            </div>
+            <div class="receipt-meta-block">
+              <strong>Order Placed At:</strong>
+              <span id="modal-order-date">—</span>
+            </div>
+            <div class="receipt-meta-block">
+              <strong>Payment Method:</strong>
+              <span id="modal-order-payment">—</span>
+            </div>
+            <div class="receipt-meta-block" style="grid-column: 1 / -1;">
+              <strong>Delivery Address:</strong>
+              <span id="modal-order-cust-address">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ordered Items Table -->
+        <h4 style="font-size: 13px; font-weight: 700; margin-bottom: -6px;">Ordered Food Items</h4>
+        <table class="order-items-receipt-table">
+          <thead>
+            <tr>
+              <th>Dish</th>
+              <th>Rate</th>
+              <th>Qty</th>
+              <th style="text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="modal-order-items-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+
+        <!-- Bill Breakdown -->
+        <div class="order-bill-summary-rows">
+          <div class="bill-row-item">
+            <span>Subtotal:</span>
+            <strong id="modal-order-subtotal">₹0</strong>
+          </div>
+          <div class="bill-row-item">
+            <span>Delivery Fee:</span>
+            <span id="modal-order-delivery">₹0</span>
+          </div>
+          <div class="bill-row-item">
+            <span>Taxes &amp; Packaging (5%):</span>
+            <span id="modal-order-tax">₹0</span>
+          </div>
+          <div class="bill-row-item total-bold">
+            <span>Grand Total:</span>
+            <span id="modal-order-total" style="color: var(--gold-dark);">₹0</span>
+          </div>
+        </div>
+
+        <!-- Order Workflow Status Updater inside Modal -->
+        <div style="background: var(--secondary-cream); padding: 14px 18px; border-radius: var(--radius-md); border: 1px solid rgba(245, 184, 46, 0.4); display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <div>
+            <strong style="display: block; font-size: 12.5px; color: var(--text-charcoal);">Update Order Status:</strong>
+            <small style="font-size: 11px; color: var(--text-muted);">Change customer order fulfillment stage</small>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <select id="modal-order-status-select" class="form-select" style="padding: 6px 12px; font-size: 12px; font-weight: 700;">
+              <option value="Pending">Pending</option>
+              <option value="Confirmed">Confirmed</option>
+              <option value="Preparing">Preparing</option>
+              <option value="Ready for Pickup">Ready for Pickup</option>
+              <option value="Completed">Completed</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <button type="button" class="btn-primary-yellow" style="padding: 6px 14px; font-size: 12px;" onclick="window.QuickBiteAdmin.saveModalStatusChange()">
+              Update
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn-card-action" style="width: auto; padding: 0 16px; height: 38px;" onclick="window.print()" title="Print receipt or save PDF">
+          🖨️ Print Order
+        </button>
+        <button type="button" class="btn-primary-yellow" onclick="window.QuickBiteAdmin.closeOrderDetailsModal()">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       4. Authorization Gate Overlay (If not logged in as Admin)
+       ========================================================================== -->
+  <div id="admin-auth-overlay" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 460px; text-align: center; padding: 36px 28px;">
+      <div style="font-size: 54px; margin-bottom: 14px;">🔒</div>
+      <h3 style="font-size: 20px; font-weight: 800; color: var(--text-charcoal); margin-bottom: 6px;">
+        Admin Authentication Required
+      </h3>
+      <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 22px;">
+        The QuickBite Admin Module is restricted to authenticated restaurant staff and management. Please sign in with administrator credentials.
+      </p>
+
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <button type="button" class="btn-primary-yellow" style="justify-content: center; padding: 12px;" onclick="window.QuickBiteAdmin.handleDemoAdminLogin()">
+          🔑 Sign In as Restaurant Admin (1-Click)
+        </button>
+        <a href="login.html?redirect=admin.html" class="btn-card-action" style="width: 100%; height: 42px; justify-content: center; font-weight: 600;">
+          Go to Standard Login Page →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Feedback Box -->
+  <div id="admin-toast-box" class="admin-toast-box" aria-live="polite"></div>
+
+  <!-- Shared Scripts & Admin Logic -->
+  <script src="js/storage.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>
+

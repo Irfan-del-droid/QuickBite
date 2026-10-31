@@ -50,6 +50,19 @@
         <!-- Feedback Alert Container -->
         <div id="auth-alert" class="auth-alert" role="alert" aria-live="polite" style="display: none;"></div>
 
+        <!-- Quick Demo Credentials Picker -->
+        <div class="demo-credentials-card" style="margin-bottom: 1.25rem; padding: 0.9rem; background: var(--warm-cream, #FFF4D6); border-radius: 12px; border: 1.5px dashed #E6A23C;">
+          <p style="font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; color: #7B4B00; text-align: center;">⚡ One-Click Demo Credentials:</p>
+          <div style="display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap;">
+            <button type="button" id="btn-fill-admin" class="btn" style="padding: 0.45rem 0.85rem; font-size: 0.78rem; background: #FFC94A; color: #252525; border: 1px solid #D49B2E; border-radius: 8px; font-weight: 700; cursor: pointer; transition: transform 0.15s ease;">
+              🔑 Admin Portal
+            </button>
+            <button type="button" id="btn-fill-demo" class="btn" style="padding: 0.45rem 0.85rem; font-size: 0.78rem; background: #ffffff; color: #252525; border: 1px solid #D8DCE5; border-radius: 8px; font-weight: 600; cursor: pointer; transition: transform 0.15s ease;">
+              👤 Customer Account
+            </button>
+          </div>
+        </div>
+
         <!-- Login Form -->
         <form id="login-form" class="auth-form" novalidate>
           
